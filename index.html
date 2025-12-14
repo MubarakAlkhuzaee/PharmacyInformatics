@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lieu Days Lookup</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 40px auto; }
+    label { display:block; margin-top:10px; }
+    input { width:100%; padding:6px; }
+    button { margin-top:12px; padding:8px 12px; }
+    #status { margin-top:10px; font-size:0.9rem; }
+    #result { margin-top:15px; font-weight:bold; white-space:pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>Check Your Lieu Days</h2>
+
+  <form id="lookupForm">
+    <label>Username
+      <input type="text" id="username" required>
+    </label>
+    <button type="submit">Check</button>
+  </form>
+
+  <div id="status"></div>
+  <div id="result"></div>
+
+  <button id="addOneBtn" style="display:none;">➕ Add 1 Day</button>
+
+<script>
+  const FLOW_URL_LOOKUP = "https://defaultb84725a503734d779259051685769b.f2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/f3e477c0852c4f518016770748a882e8/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=aNAsPJ0nE33pmaIXBibJ4SJxN714zkLtU_BX-VMB-BY";
+  const FLOW_URL_INCREASE = "https://defaultb84725a503734d779259051685769b.f2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/5668d486e93d492e983b4d4fe0b26560/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2bcYNLjA90Fs0dC9JBOj8TH5gOLy3hdQDUSxLw1de18";
+
+  let lastUsername = null;
+
+  document.getElementById("lookupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    checkDays();
+  });
+
+  async function checkDays() {
+    const username = document.getElementById("username").value.trim();
+    lastUsername = username;
+
+    document.getElementById("status").textContent = "Checking...";
+    document.getElementById("result").textContent = "";
+
+    const res = await fetch(FLOW_URL_LOOKUP, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById("status").textContent = "Lookup failed.";
+      document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+      return;
+    }
+
+    // Show result
+    document.getElementById("status").textContent = "Done.";
+    document.getElementById("result").textContent =
+      `Username: ${data.username}\n` +
+      `Remaining Lieu Days: ${data.lieuDays}`;
+
+    // Show the add button
+    document.getElementById("addOneBtn").style.display = "block";
+  }
+
+  // ADD ONE DAY
+  document.getElementById("addOneBtn").addEventListener("click", async () => {
+    if (!lastUsername) return;
+
+    document.getElementById("status").textContent = "Updating...";
+
+    const res = await fetch(FLOW_URL_INCREASE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: lastUsername })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById("status").textContent = "Update failed.";
+      document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+      return;
+    }
+
+    // Show update result
+    document.getElementById("status").textContent = "Updated successfully!";
+    document.getElementById("result").textContent =
+      `Username: ${data.username}\n` +
+      `Old Value: ${data.oldValue}\n` +
+      `New Value: ${data.newValue}`;
+
+    // Refresh data by calling lookup again
+    checkDays();
+  });
+</script>
+
+</body>
+</html>
