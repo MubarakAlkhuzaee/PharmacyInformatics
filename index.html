@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Informatics Portal</title>
+  <title>Lieu Days Portal</title>
 
   <style>
     :root{
@@ -19,8 +19,11 @@
       --radius: 18px;
       --ease: cubic-bezier(.2,.9,.2,1);
     }
+
     *{ box-sizing:border-box; }
     html, body{ height:100%; }
+    html{ font-size: clamp(14px, 1.0vw, 16px); }
+
     body{
       margin:0; color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
@@ -30,9 +33,10 @@
         radial-gradient(900px 700px at 50% 115%, rgba(242,234,213,0.08), transparent 65%),
         linear-gradient(180deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
-	background-attachment: fixed;
-  	background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
     }
+
     .bg-shimmer{
       position:fixed; inset:-40%;
       background: linear-gradient(120deg,
@@ -50,36 +54,32 @@
     }
     @keyframes shimmer{ 0%{transform:translateX(-25%) rotate(5deg);} 100%{transform:translateX(25%) rotate(5deg);} }
 
-    /* Far top-left logo (no bubble) */
-    .mngha-fixed{
-      position: fixed; top: 18px; left: 18px; z-index: 9999;
-      width: 190px; height: 74px;
-      background: transparent; border:none; box-shadow:none; padding:0; margin:0;
-      display:flex; align-items:center; justify-content:flex-start;
-      transition: transform 200ms var(--ease), filter 200ms var(--ease), opacity 200ms var(--ease);
-    }
-    .mngha-fixed:hover{ transform: translateY(-1px); filter: brightness(1.06); opacity:.98; }
-    .mngha-fixed img{ width:100%; height:100%; object-fit:contain; display:block; }
-
     .wrap{
       width:min(980px, calc(100% - 32px));
-      margin: 46px auto 60px;
+      margin: 44px auto 60px;
       position:relative;
       animation: enter 700ms var(--ease) both;
+      min-width:0;
     }
     @keyframes enter{ from{opacity:0; transform:translateY(16px) scale(.985);} to{opacity:1; transform:translateY(0) scale(1);} }
 
     header{
       display:flex; align-items:center; gap:16px;
       margin-bottom:14px;
+      flex-wrap:wrap;
+      min-width:0;
     }
+
     .logoWrap{
-      width:208px; height:208px; border-radius:22px;
+      width: clamp(104px, 16vw, 190px);
+      height: clamp(104px, 16vw, 190px);
+      border-radius:22px;
       background: rgba(242,234,213,0.10);
       border: 1px solid rgba(242,234,213,0.18);
       box-shadow: 0 16px 34px rgba(0,0,0,0.45);
       display:grid; place-items:center;
       overflow:hidden; position:relative;
+      flex: 0 0 auto;
     }
     .logoWrap::before{
       content:""; position:absolute; inset:-2px;
@@ -88,10 +88,29 @@
         radial-gradient(42px 42px at 80% 10%, rgba(76,148,133,0.22), transparent 60%);
       filter: blur(10px); opacity:0.9; pointer-events:none;
     }
-    .logoImg{ width:192px; height:192px; object-fit:contain; display:block; position:relative; z-index:1; }
-    .brand{ display:flex; flex-direction:column; line-height:1.1; }
-    .brand .title{ font-size:1.38rem; letter-spacing:-0.02em; font-weight:900; }
-    .brand .subtitle{ color:var(--muted); font-size:0.98rem; margin-top:6px; }
+    .logoImg{
+      width: calc(clamp(104px, 16vw, 190px) - 16px);
+      height: calc(clamp(104px, 16vw, 190px) - 16px);
+      object-fit:contain; display:block; position:relative; z-index:1;
+    }
+
+    .brand{
+      display:flex; flex-direction:column; line-height:1.1;
+      min-width:0;
+      flex: 1 1 340px;
+    }
+    .brand .title{
+      font-size: clamp(1.15rem, 1.2vw + 0.7rem, 1.45rem);
+      letter-spacing:-0.02em;
+      font-weight:950;
+      overflow-wrap:anywhere;
+    }
+    .brand .subtitle{
+      color:var(--muted);
+      font-size: clamp(0.9rem, 0.6vw + 0.7rem, 1.0rem);
+      margin-top:6px;
+      overflow-wrap:anywhere;
+    }
 
     .card{
       background: linear-gradient(180deg, var(--card), var(--card2));
@@ -102,6 +121,7 @@
       -webkit-backdrop-filter: blur(14px);
       padding:20px;
       position:relative; overflow:hidden;
+      min-width:0;
     }
     .card::before{
       content:""; position:absolute; inset:-2px;
@@ -112,10 +132,11 @@
     }
     .card > *{ position:relative; z-index:1; }
 
-    .grid{ display:grid; gap:14px; }
-    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-    .cols{ display:grid; gap:14px; grid-template-columns: 1.1fr 0.9fr; }
-    @media (max-width: 900px){ .cols{ grid-template-columns: 1fr; } }
+    .grid{ display:grid; gap:14px; min-width:0; }
+    .row{
+      display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+      min-width:0;
+    }
 
     label{ display:block; font-size:0.92rem; color:var(--muted); margin-bottom:8px; user-select:none; }
     input, select, textarea{
@@ -128,6 +149,7 @@
       outline:none;
       transition: border-color 200ms var(--ease), box-shadow 200ms var(--ease), transform 200ms var(--ease);
       font-size:1rem;
+      min-width:0;
     }
     textarea{ min-height: 110px; resize: vertical; }
     input:focus, select:focus, textarea:focus{
@@ -135,24 +157,30 @@
       box-shadow: 0 0 0 4px rgba(76,148,133,0.16);
       transform: translateY(-1px);
     }
+    input[type="date"]{ color-scheme: dark; }
+    input[type="date"]::-webkit-calendar-picker-indicator{ filter: invert(1); opacity: .9; cursor:pointer; }
+    input[type="date"]::-webkit-calendar-picker-indicator:hover{ opacity: 1; }
 
     button{
       border:0; border-radius: 14px;
       padding: 12px 14px;
-      font-weight:900;
+      font-weight:950;
       cursor:pointer;
       transition: transform 200ms var(--ease), filter 200ms var(--ease), box-shadow 200ms var(--ease), opacity 200ms var(--ease);
       display:inline-flex; align-items:center; gap:10px;
       user-select:none; white-space:nowrap;
+      max-width: 100%;
     }
     button:active{ transform: translateY(1px) scale(0.99); }
     button:disabled{ cursor:not-allowed; opacity:.55; }
+
     .btn-primary{
       background: linear-gradient(135deg, var(--teal), var(--deep));
       color: rgba(7,17,15,0.96);
       box-shadow: 0 16px 34px rgba(76,148,133,0.18);
     }
     .btn-primary:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+
     .btn-ghost{
       background: rgba(242,234,213,0.08);
       border: 1px solid rgba(242,234,213,0.18);
@@ -160,21 +188,35 @@
     }
     .btn-ghost:hover{ background: rgba(242,234,213,0.11); transform: translateY(-1px); }
 
+    .btn-danger{
+      background: rgba(255,90,95,0.16);
+      border: 1px solid rgba(255,90,95,0.38);
+      color: rgba(255,90,95,0.98);
+    }
+    .btn-danger:hover{ background: rgba(255,90,95,0.22); transform: translateY(-1px); }
+
     .status{
       display:flex; align-items:center; gap:10px;
       color: var(--muted);
       min-height: 22px;
       font-size:0.98rem;
       margin-top: 10px;
+      flex-wrap: wrap;
+      min-width:0;
     }
+
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding: 6px 10px; border-radius: 999px;
       border: 1px solid rgba(242,234,213,0.18);
       background: rgba(0,0,0,0.18);
       color: rgba(242,234,213,0.88);
-      font-weight:900; font-size:0.86rem;
+      font-weight:950; font-size:0.86rem;
       letter-spacing: 0.01em;
+      max-width: 100%;
+      overflow-wrap:anywhere;
+      white-space: nowrap;
+      flex: 0 0 auto;
     }
     .pill.good{ border-color: rgba(50,213,131,0.38); color: rgba(50,213,131,0.98); }
     .pill.bad{ border-color: rgba(255,90,95,0.38); color: rgba(255,90,95,0.98); }
@@ -188,36 +230,66 @@
       border: 1px solid rgba(242,234,213,0.14);
       background: rgba(0,0,0,0.18);
       padding: 14px;
+      min-width:0;
+      overflow:hidden;
     }
 
-    .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; min-width:0; }
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       padding: 8px 10px;
       border-radius: 999px;
       border: 1px solid rgba(242,234,213,0.16);
       background: rgba(0,0,0,0.16);
-      font-weight:850;
+      font-weight:900;
       font-size:0.9rem;
       color: rgba(242,234,213,0.9);
+      max-width: 100%;
     }
+    .chip span{ overflow-wrap:anywhere; }
     .chip button{
       padding:0; border-radius:10px;
       background: transparent; border:none;
       color: rgba(242,234,213,0.8);
       cursor:pointer;
-      font-weight:900;
+      font-weight:950;
     }
 
-    table{ width:100%; border-collapse: collapse; }
+    .tableWrap{
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 14px;
+      padding-bottom: 2px;
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      table-layout: auto;
+      min-width: 720px;
+    }
     th, td{
       text-align:left;
-      padding: 10px 8px;
+      padding: 10px 10px;
       border-bottom: 1px solid rgba(242,234,213,0.10);
       vertical-align: top;
-      font-size: 0.95rem;
+      font-size: clamp(0.88rem, 0.35vw + 0.8rem, 0.98rem);
+      white-space: nowrap;
     }
-    th{ color: rgba(242,234,213,0.75); font-size:0.9rem; }
+    td.wrap, th.wrap{
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .actionStack{
+      display:flex;
+      gap:8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      min-width: 160px;
+    }
+
     .muted{ color: rgba(242,234,213,0.72); }
     .hidden{ display:none !important; }
 
@@ -227,6 +299,7 @@
       border-top-color: rgba(7,17,15,0.92);
       animation: spin 700ms linear infinite;
       display:none;
+      flex:0 0 auto;
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
 
@@ -240,6 +313,8 @@
       box-shadow: 0 16px 40px rgba(0,0,0,0.55);
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       opacity:0; pointer-events:none;
+      max-width: min(720px, calc(100% - 24px));
+      overflow-wrap:anywhere;
     }
     .toast.show{ animation: toastInOut 2200ms var(--ease) both; }
     @keyframes toastInOut{
@@ -248,24 +323,61 @@
       85%{ opacity:1; transform: translateX(-50%) translateY(0); }
       100%{ opacity:0; transform: translateX(-50%) translateY(10px); }
     }
+
+    .modalBackdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,0.55);
+      display:none;
+      align-items:center; justify-content:center;
+      padding:18px;
+    }
+    .modal{
+      width:min(680px, 100%);
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      min-width:0;
+    }
+    .modal h3{ margin:0 0 10px; font-size:1.1rem; }
+    .kv{
+      display:grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap:10px;
+      align-items:start;
+      margin-top:10px;
+      min-width:0;
+    }
+    @media (max-width: 520px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .kv .k{ color: var(--muted); font-weight:950; }
+    .prebox{
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap:anywhere;
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(242,234,213,0.14);
+      border-radius: 14px;
+      padding: 12px;
+      color: rgba(242,234,213,0.92);
+      min-width:0;
+    }
   </style>
 </head>
 
 <body>
-  <a class="mngha-fixed" href="#" aria-label="MNGHA">
-    <img src="MNGHAlogo.svg" alt="MNGHA Logo" onerror="this.onerror=null; this.src='MNGHAlogo.png';" />
-  </a>
-
   <div class="bg-shimmer"></div>
 
   <div class="wrap">
     <header>
       <div class="logoWrap">
-        <img class="logoImg" src="InformaticsLogo.svg" alt="App Logo" onerror="this.onerror=null; this.src='InformaticsLogo.png';" />
+        <img class="logoImg" src="InformaticsLogo.svg" alt="Logo" onerror="this.onerror=null; this.src='InformaticsLogo.png';" />
       </div>
       <div class="brand">
-        <div class="title">Informatics Portal</div>
-        <div class="subtitle">OTP Login • Submit requests • Track approvals</div>
+        <div class="title">Lieu Days & Overtime Portal</div>
+        <div class="subtitle">Login → OTP • Submit requests • Approvals • Tracking</div>
       </div>
     </header>
 
@@ -275,9 +387,13 @@
         <div class="box">
           <div class="grid">
             <div>
-              <label for="email">Username</label>
-              <input id="email" type="email" placeholder="USERNAME01" autocomplete="email" />
-              <div class="muted" style="margin-top:8px;">We will send a 6-digit OTP to your email.</div>
+              <label for="username">Username</label>
+              <input id="username" type="text" placeholder="USERNAME01" autocomplete="username" />
+            </div>
+            <div>
+              <label for="password">Password</label>
+              <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+              <div class="muted" style="margin-top:8px;">If username/password is correct, we will send OTP to your email.</div>
             </div>
             <div class="row">
               <button class="btn-primary" id="btnSend" type="button">
@@ -309,90 +425,122 @@
         <div class="row" style="justify-content: space-between;">
           <div class="status" style="margin:0;">
             <span class="pill good">Logged in</span>
-            <span id="meText"></span>
+            <span id="meText" style="overflow-wrap:anywhere; min-width:0;"></span>
           </div>
           <div class="row">
+            <button class="btn-ghost" id="btnChangePw" type="button">🔐 Change Password</button>
             <button class="btn-ghost" id="btnRefresh" type="button">🔄 Refresh</button>
             <button class="btn-ghost" id="btnLogout" type="button">🚪 Logout</button>
           </div>
         </div>
 
-        <div class="cols">
-          <!-- LEFT: Balance + Submit -->
-          <div class="grid">
-            <div class="box">
-              <div class="row" style="justify-content: space-between;">
-                <div>
-                  <div class="muted">Remaining Lieu Days</div>
-                  <div style="font-size:2.0rem; font-weight:950; margin-top:4px;" id="lieuDaysText">—</div>
-                </div>
+        <!-- ✅ SINGLE COLUMN STACK -->
+        <div class="grid">
+          <!-- Balance -->
+          <div class="box">
+            <div class="row" style="justify-content: space-between; align-items: flex-start;">
+              <div style="min-width:0;">
+                <div class="muted">Remaining Lieu Days</div>
+                <div style="font-size:clamp(1.6rem, 2.2vw, 2.1rem); font-weight:950; margin-top:4px;" id="lieuDaysText">—</div>
+              </div>
+
+              <div class="row" style="justify-content:flex-end;">
+                <button class="btn-primary" id="btnTakeLieu" type="button">🗓️ Take Lieu Days</button>
                 <div class="pill" id="balancePill">Balance</div>
               </div>
-              <div class="muted" style="margin-top:10px;" id="approversText"></div>
             </div>
+            <div class="muted" style="margin-top:10px;" id="approversText"></div>
+            <div class="muted" style="margin-top:6px;" id="approverHint"></div>
+          </div>
 
-            <div class="box">
-              <div style="font-weight:950; font-size:1.05rem; margin-bottom:10px;">Submit Overtime Reimbursement</div>
-
-              <div class="grid">
-                <div>
-                  <label>Add Covered Day</label>
-                  <div class="row">
-                    <input id="datePick" type="date" />
-                    <button class="btn-ghost" id="btnAddDate" type="button">➕ Add</button>
-                    <button class="btn-ghost" id="btnClearDates" type="button">🧹 Clear</button>
-                  </div>
-                  <div class="muted" style="margin-top:8px;">Selected days: <b id="daysCountText">0</b></div>
-                  <div class="chips" id="chips"></div>
-                </div>
-
-                <div>
-                  <label for="reqType">Reimbursement Type</label>
-                  <select id="reqType">
-                    <option value="Paid Overtime">Paid Overtime</option>
-                    <option value="Lieu Days">Lieu Days</option>
-                  </select>
-                  <div class="muted" style="margin-top:8px;">If approved as <b>Lieu Days</b>, the days will be added to your balance.</div>
-                </div>
-
-                <div>
-                  <label for="justification">Justification</label>
-                  <textarea id="justification" placeholder="Write the reason, shift details, coverage context, etc."></textarea>
-                </div>
-
+          <!-- Submit Overtime -->
+          <div class="box">
+            <div style="font-weight:950; font-size:1.05rem; margin-bottom:10px;">Submit Overtime Reimbursement</div>
+            <div class="grid">
+              <div>
+                <label>Add Covered Day</label>
                 <div class="row">
-                  <button class="btn-primary" id="btnSubmit" type="button">
-                    📩 Submit Request <span class="spinner" id="spinSubmit"></span>
-                  </button>
+                  <input id="datePick" type="date" />
+                  <button class="btn-ghost" id="btnClearDates" type="button">🧹 Clear</button>
                 </div>
+                <div class="muted" style="margin-top:8px;">Selected days: <b id="daysCountText">0</b></div>
+                <div class="chips" id="chips"></div>
+              </div>
+
+              <div>
+                <label for="reqType">Reimbursement Type</label>
+                <select id="reqType">
+                  <option value="Paid Overtime">Paid Overtime</option>
+                  <option value="Lieu Days">Lieu Days</option>
+                </select>
+                <div class="muted" style="margin-top:8px;">If approved as <b>Lieu Days</b>, the days will be added to your balance.</div>
+              </div>
+
+              <div>
+                <label for="justification">Justification</label>
+                <textarea id="justification" placeholder="Write the reason, shift details, coverage context, etc."></textarea>
+              </div>
+
+              <div class="row">
+                <button class="btn-primary" id="btnSubmit" type="button">
+                  📩 Submit Request <span class="spinner" id="spinSubmit"></span>
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- RIGHT: Requests table -->
+          <!-- Pending With Me -->
+          <div class="box" id="approvalsBox">
+            <div class="row" style="justify-content: space-between; margin-bottom:10px;">
+              <div style="font-weight:950; font-size:1.05rem;">Pending With Me</div>
+              <div class="muted" id="pendingCountText"></div>
+            </div>
+
+            <div class="tableWrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="wrap">Employee</th>
+                    <th>Days</th>
+                    <th>Type</th>
+                    <th class="wrap">Dates</th>
+                    <th class="wrap">Justification</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="pendingTbody">
+                  <tr><td colspan="6" class="muted">No pending approvals.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- My Requests -->
           <div class="box">
             <div class="row" style="justify-content: space-between; margin-bottom:10px;">
               <div style="font-weight:950; font-size:1.05rem;">My Requests</div>
               <div class="muted" id="reqCountText"></div>
             </div>
 
-            <div style="overflow:auto;">
+            <div class="tableWrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Date</th>
+                    <th class="wrap">Date</th>
                     <th>Days</th>
                     <th>Type</th>
                     <th>Status</th>
+                    <th class="wrap">Justification</th>
                     <th>Details</th>
                   </tr>
                 </thead>
                 <tbody id="reqTbody">
-                  <tr><td colspan="5" class="muted">No data yet.</td></tr>
+                  <tr><td colspan="6" class="muted">No data yet.</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -406,17 +554,142 @@
 
   <div class="toast" id="toast"></div>
 
+  <!-- Change password modal -->
+  <div class="modalBackdrop" id="pwModal">
+    <div class="modal">
+      <h3>Change Password</h3>
+      <div class="grid">
+        <div>
+          <label for="oldPw">Old Password</label>
+          <input id="oldPw" type="password" autocomplete="current-password" />
+        </div>
+        <div>
+          <label for="newPw">New Password</label>
+          <input id="newPw" type="password" autocomplete="new-password" />
+          <div class="muted" style="margin-top:6px;">Recommended: 8+ characters.</div>
+        </div>
+        <div class="row" style="justify-content:flex-end;">
+          <button class="btn-ghost" id="btnPwCancel" type="button">Cancel</button>
+          <button class="btn-primary" id="btnPwSave" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reject reason modal -->
+  <div class="modalBackdrop" id="rejModal">
+    <div class="modal">
+      <h3>Reject Request</h3>
+      <div class="grid">
+        <div>
+          <label for="rejReason">Reason</label>
+          <textarea id="rejReason" placeholder="Write the rejection reason..."></textarea>
+        </div>
+        <div class="row" style="justify-content:flex-end;">
+          <button class="btn-ghost" id="btnRejCancel" type="button">Cancel</button>
+          <button class="btn-danger" id="btnRejConfirm" type="button">Reject</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details modal -->
+  <div class="modalBackdrop" id="detailsModal">
+    <div class="modal">
+      <h3>Request Details</h3>
+      <div class="kv">
+        <div class="k">Status</div>
+        <div id="dStatus" class="prebox"></div>
+
+        <div class="k">Type</div>
+        <div id="dType" class="prebox"></div>
+
+        <div class="k">Days</div>
+        <div id="dDays" class="prebox"></div>
+
+        <div class="k">Dates</div>
+        <div id="dDates" class="prebox"></div>
+
+        <div class="k">Justification</div>
+        <div id="dJust" class="prebox"></div>
+
+        <div class="k">Summary</div>
+        <div id="dSummary" class="prebox"></div>
+      </div>
+
+      <div class="row" style="justify-content:flex-end; margin-top:12px;">
+        <button class="btn-ghost" id="btnDetailsClose" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Take Lieu Days modal -->
+  <div class="modalBackdrop" id="takeLieuModal">
+    <div class="modal">
+      <h3>Take Lieu Days</h3>
+      <div class="muted">Pick the dates you want to take as Lieu Days. This will go to Supervisor + Assistant Director approval. After final approval, days will be deducted from your balance.</div>
+
+      <div class="grid" style="margin-top:12px;">
+        <div>
+          <label for="takeDatePick">Add Date</label>
+          <div class="row">
+            <input id="takeDatePick" type="date" />
+            <button class="btn-ghost" id="btnTakeClear" type="button">🧹 Clear</button>
+          </div>
+          <div class="muted" style="margin-top:8px;">
+            Selected days: <b id="takeDaysCountText">0</b>
+            <span class="muted" id="takeBalanceHint" style="margin-left:10px;"></span>
+          </div>
+          <div class="chips" id="takeChips"></div>
+        </div>
+
+        <div>
+          <label for="takeJustification">Justification (optional)</label>
+          <textarea id="takeJustification" placeholder="Example: family event, appointment, etc."></textarea>
+        </div>
+
+        <div class="row" style="justify-content:flex-end;">
+          <button class="btn-ghost" id="btnTakeCancel" type="button">Cancel</button>
+          <button class="btn-primary" id="btnTakeSubmit" type="button">
+            📩 Submit Take Lieu Request <span class="spinner" id="spinTakeSubmit"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ====== POWER AUTOMATE FLOWS ======
-    const FLOW_SEND_OTP     = "https://defaultb84725a503734d779259051685769b.f2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6349151fa8de4a45875e0b05ef63b135/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=XBNbnL9iYoKHYmAjc-MZ9ImWvb5dELBsnT3arFmNEOc";
-    const FLOW_VERIFY_OTP   = "https://defaultb84725a503734d779259051685769b.f2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/814ea5e30d7d4f6cbdc0a1068b0003f1/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=unYlz1quTODrvyizYKjVvWYgZ5bC7c4HzS1W1yrLEeQ";
-    const FLOW_DASHBOARD    = "https://defaultb84725a503734d779259051685769b.f2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/913a3b9a2903473da79423c9ee3d75d4/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2yjch6FFOI1SHv6EjWG1HsLtiWBlQ2Nqjgyy6OcYFdw";    // returns balance + requests
-    const FLOW_SUBMIT_REQUEST = "https://defaultb84725a503734d779259051685769b.f2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/4d39cc17dad141a08cc256ca553afb03/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=i43xMbkdxRvYDcOEEfXPgjvGPaKfvMxBG49PEpkQXGs";
+    // =========================
+    // CONFIG (placeholders - fill yours)
+    // =========================
+    const CONFIG = {
+      flows: {
+        sendOtp:        "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/897bca1db8b84232bea113328594a803/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hVUBdY8UW5Ahg-StXtBFWkfsfh3l-baJktdONKKgBpc",
+        verifyOtp:      "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9bed7a236d0844d4911edc518272b1cf/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sL2gl1lgSJPQZ4uhD3TZjlcluf1XRJU0HIYU4F-6kSg",
+        dashboard:      "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/685b89d7f89345c4920a7a8b43a4611a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UNXsp4FVh_ns1GV94mHUyXwRH0v-2V4lFAZD3XwBPzk",
+        submitRequest:  "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/18979bf969d94d0d81f250070f5be8dd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=B1EY4xm2uIYiapj0ogjOguxg9eCaEXjN7UVzUqDLp-Q",
+        approvalsList:  "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7f9e706506684aad894369d6623ce84c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ON63ffZNKE2w2lR5Ud1o9qssiv2HxJkfaxKXVUWs1NU",
+        approve:        "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dc381446869f450e89c3a649a31ce86a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Y23RS037JaBfq7c3UyQAbhU7rEtQN9EQnogEY3GDlrc",
+        reject:         "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/44ed64dac2b74035978ab589fbf5ee44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ds0l7Yo0NmnPUr6S1oHa3JJxQ_G8ecIjvSXt7et7CYk",
+        changePassword: "PASTE_CHANGE_PASSWORD_FLOW_URL_HERE",
+        logout:         "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8af68dd3ac8e466085adc6b719accc40/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=B2RYSD6-l3z5OHGp-ZVa8DW1jm1lK0CTjzXAwkt5Imc",
+        takeLieuDays:   "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dab4841186364382af41c19641dfc9c3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=p0Fu-gk6VdO7x9g3l69DPvw1plneSIAIVQAq-bPSiBc"
+      }
+    };
 
-    // Session storage
-    const SESSION_KEY = "otp_portal_session_v1";
+    const FLOW_SEND_OTP        = CONFIG.flows.sendOtp;
+    const FLOW_VERIFY_OTP      = CONFIG.flows.verifyOtp;
+    const FLOW_DASHBOARD       = CONFIG.flows.dashboard;
+    const FLOW_SUBMIT_REQUEST  = CONFIG.flows.submitRequest;
+    const FLOW_APPROVALS_LIST  = CONFIG.flows.approvalsList;
+    const FLOW_APPROVE         = CONFIG.flows.approve;
+    const FLOW_REJECT          = CONFIG.flows.reject;
+    const FLOW_CHANGE_PW       = CONFIG.flows.changePassword;
+    const FLOW_LOGOUT          = CONFIG.flows.logout;
+    const FLOW_TAKE_LIEU_DAYS  = CONFIG.flows.takeLieuDays;
 
-    // ====== UI ======
+    const SESSION_KEY = "lieu_portal_session_v5";
+
     const el = (id) => document.getElementById(id);
     const toast = el("toast");
 
@@ -424,8 +697,9 @@
     const viewApp   = el("viewApp");
     const otpBox    = el("otpBox");
 
-    const emailInput = el("email");
-    const otpInput   = el("otp");
+    const usernameInput = el("username");
+    const passwordInput = el("password");
+    const otpInput      = el("otp");
 
     const btnSend = el("btnSend");
     const btnVerify = el("btnVerify");
@@ -437,13 +711,16 @@
 
     const btnLogout = el("btnLogout");
     const btnRefresh = el("btnRefresh");
+    const btnChangePw = el("btnChangePw");
+
+    const btnTakeLieu = el("btnTakeLieu");
 
     const meText = el("meText");
     const lieuDaysText = el("lieuDaysText");
     const approversText = el("approversText");
+    const approverHint = el("approverHint");
 
     const datePick = el("datePick");
-    const btnAddDate = el("btnAddDate");
     const btnClearDates = el("btnClearDates");
     const chips = el("chips");
     const daysCountText = el("daysCountText");
@@ -455,10 +732,106 @@
     const reqTbody = el("reqTbody");
     const reqCountText = el("reqCountText");
 
+    const pendingTbody = el("pendingTbody");
+    const pendingCountText = el("pendingCountText");
+
     const statusText = el("statusText");
     const statusPill = el("statusPill");
 
+    // Modals
+    const pwModal = el("pwModal");
+    const oldPw = el("oldPw");
+    const newPw = el("newPw");
+    const btnPwCancel = el("btnPwCancel");
+    const btnPwSave = el("btnPwSave");
+
+    const rejModal = el("rejModal");
+    const rejReason = el("rejReason");
+    const btnRejCancel = el("btnRejCancel");
+    const btnRejConfirm = el("btnRejConfirm");
+
+    const detailsModal = el("detailsModal");
+    const btnDetailsClose = el("btnDetailsClose");
+    const dStatus = el("dStatus");
+    const dType = el("dType");
+    const dDays = el("dDays");
+    const dDates = el("dDates");
+    const dJust = el("dJust");
+    const dSummary = el("dSummary");
+
+    // Take lieu modal
+    const takeLieuModal = el("takeLieuModal");
+    const takeDatePick = el("takeDatePick");
+    const btnTakeClear = el("btnTakeClear");
+    const takeChips = el("takeChips");
+    const takeDaysCountText = el("takeDaysCountText");
+    const takeBalanceHint = el("takeBalanceHint");
+    const takeJustification = el("takeJustification");
+    const btnTakeCancel = el("btnTakeCancel");
+    const btnTakeSubmit = el("btnTakeSubmit");
+    const spinTakeSubmit = el("spinTakeSubmit");
+
     let selectedDates = [];
+    let pendingRejectRequestId = null;
+
+    let takeDates = [];
+    let cachedLieuBalance = 0;
+
+    // ---------- Helpers ----------
+    function lowerKeys(obj){
+      const out = {};
+      if (!obj || typeof obj !== "object") return out;
+      for (const k of Object.keys(obj)){
+        out[String(k).toLowerCase()] = obj[k];
+      }
+      return out;
+    }
+
+    function pickField(obj, candidates){
+      if (!obj) return undefined;
+      for (const c of candidates){
+        if (obj[c] !== undefined && obj[c] !== null) return obj[c];
+      }
+      const lk = lowerKeys(obj);
+      for (const c of candidates){
+        const key = String(c).toLowerCase();
+        if (lk[key] !== undefined && lk[key] !== null) return lk[key];
+      }
+      const keys = Object.keys(obj);
+      for (const c of candidates){
+        const needle = String(c).toLowerCase();
+        const found = keys.find(k => String(k).toLowerCase().endsWith(needle));
+        if (found && obj[found] !== undefined && obj[found] !== null) return obj[found];
+      }
+      return undefined;
+    }
+
+    function asString(v){
+      if (v === undefined || v === null) return "";
+      if (typeof v === "string") return v;
+      return String(v);
+    }
+
+    function prettyDates(datesJsonOrArray){
+      try{
+        if (Array.isArray(datesJsonOrArray)) return datesJsonOrArray.join("\n");
+        const s = asString(datesJsonOrArray).trim();
+        if (!s) return "—";
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed)) return parsed.join("\n");
+        return JSON.stringify(parsed, null, 2);
+      }catch{
+        const s = asString(datesJsonOrArray).trim();
+        return s || "—";
+      }
+    }
+
+    function shorten(text, n){
+      const s = asString(text).trim();
+      if (!s) return "—";
+      if (s.length <= n) return s;
+      return s.slice(0, n) + "…";
+    }
 
     function showToast(message){
       toast.textContent = message;
@@ -475,13 +848,14 @@
       }
       statusPill.style.display = "inline-flex";
       statusPill.className = "pill " + (type || "");
-      statusPill.textContent = type === "good" ? "Success" :
-                               type === "bad"  ? "Error" :
-                               type === "warn" ? "Working" : "Info";
+      statusPill.textContent =
+        type === "good" ? "Success" :
+        type === "bad"  ? "Error"   :
+        type === "warn" ? "Working" : "Info";
     }
 
     function setLoading(which, on){
-      const map = { send: spinSend, verify: spinVerify, submit: spinSubmit };
+      const map = { send: spinSend, verify: spinVerify, submit: spinSubmit, take: spinTakeSubmit };
       const sp = map[which];
       if (sp) sp.style.display = on ? "inline-block" : "none";
 
@@ -489,8 +863,11 @@
       btnVerify.disabled = on;
       btnResend.disabled = on;
       btnSubmit.disabled = on;
-      btnRefresh && (btnRefresh.disabled = on);
-      btnLogout && (btnLogout.disabled = on);
+      btnRefresh.disabled = on;
+      btnLogout.disabled = on;
+      btnChangePw.disabled = on;
+      btnTakeLieu.disabled = on;
+      btnTakeSubmit.disabled = on;
     }
 
     function saveSession(s){ sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
@@ -514,7 +891,7 @@
       viewLogin.classList.remove("hidden");
       otpBox.classList.add("hidden");
       setStatus("", "");
-      emailInput.focus();
+      usernameInput.focus();
     }
 
     function showApp(){
@@ -523,7 +900,7 @@
       setStatus("", "");
     }
 
-    // ===== Dates UI =====
+    // ===== Dates UI (Overtime) =====
     function renderDates(){
       chips.innerHTML = "";
       selectedDates.sort();
@@ -541,11 +918,12 @@
       daysCountText.textContent = String(selectedDates.length);
     }
 
-    btnAddDate.addEventListener("click", () => {
+    datePick.addEventListener("change", () => {
       const d = datePick.value;
       if (!d) return;
       if (!selectedDates.includes(d)) selectedDates.push(d);
       renderDates();
+      datePick.value = "";
     });
 
     btnClearDates.addEventListener("click", () => {
@@ -553,52 +931,182 @@
       renderDates();
     });
 
-    // ===== Requests table =====
-    function statusPillFor(s){
-      const t = String(s || "").toLowerCase();
-      if (t.includes("approve")) return `<span class="pill approved">Approved</span>`;
-      if (t.includes("reject")) return `<span class="pill rejected">Rejected</span>`;
-      return `<span class="pill pending">Pending</span>`;
+    // ===== Take Lieu modal dates UI =====
+    function renderTakeDates(){
+      takeChips.innerHTML = "";
+      takeDates.sort();
+      for (const d of takeDates){
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.innerHTML = `<span>${d}</span>`;
+        const x = document.createElement("button");
+        x.type = "button";
+        x.textContent = "✕";
+        x.onclick = () => { takeDates = takeDates.filter(v => v !== d); renderTakeDates(); };
+        chip.appendChild(x);
+        takeChips.appendChild(chip);
+      }
+      takeDaysCountText.textContent = String(takeDates.length);
+      if (cachedLieuBalance >= 0){
+        takeBalanceHint.textContent = `• Balance: ${cachedLieuBalance}`;
+      }else{
+        takeBalanceHint.textContent = "";
+      }
     }
+
+    takeDatePick.addEventListener("change", () => {
+      const d = takeDatePick.value;
+      if (!d) return;
+      if (!takeDates.includes(d)) takeDates.push(d);
+      renderTakeDates();
+      takeDatePick.value = "";
+    });
+
+    btnTakeClear.addEventListener("click", () => {
+      takeDates = [];
+      renderTakeDates();
+    });
+
+    // ===== Tables =====
+    function statusPillFor(statusTextRaw){
+      const t = String(statusTextRaw || "").toLowerCase();
+      if (t.includes("approved")) return `<span class="pill approved">Approved</span>`;
+      if (t.includes("rejected")) return `<span class="pill rejected">Rejected</span>`;
+      if (!t) return `<span class="pill pending">Pending</span>`;
+      return `<span class="pill pending">${statusTextRaw}</span>`;
+    }
+
+    function openDetails(r){
+      const status = pickField(r, ["status","Status","req_status","requeststatus"]) ?? "—";
+      const type   = pickField(r, ["requestType","RequestType","type"]) ?? "—";
+      const days   = pickField(r, ["daysCount","DaysCount","dayscount"]) ?? "—";
+      const dates  = pickField(r, ["datesJson","DatesJson","datesjson","dates"]) ?? "—";
+      const just   = pickField(r, ["justification","Justification"]) ?? "—";
+      const summary= pickField(r, ["approvalSummary","ApprovalSummary","summary"]) ??
+                     pickField(r, ["rejectedReason","RejectedReason"]) ??
+                     "—";
+
+      dStatus.textContent = asString(status) || "—";
+      dType.textContent = asString(type) || "—";
+      dDays.textContent = asString(days) || "—";
+      dDates.textContent = prettyDates(dates);
+      dJust.textContent = asString(just) || "—";
+      dSummary.textContent = asString(summary) || "—";
+
+      detailsModal.style.display = "flex";
+    }
+
+    btnDetailsClose.addEventListener("click", () => { detailsModal.style.display = "none"; });
+    detailsModal.addEventListener("click", (e) => { if (e.target === detailsModal) detailsModal.style.display = "none"; });
 
     function renderRequests(reqs){
       reqCountText.textContent = `${reqs.length} request(s)`;
       if (!reqs.length){
-        reqTbody.innerHTML = `<tr><td colspan="5" class="muted">No requests yet.</td></tr>`;
+        reqTbody.innerHTML = `<tr><td colspan="6" class="muted">No requests yet.</td></tr>`;
         return;
       }
 
-      // newest first if Created exists
-      reqs.sort((a,b) => (b.created || "").localeCompare(a.created || ""));
+      reqs.sort((a,b) => {
+        const ac = pickField(a, ["created","createdon","CreatedOn","Created","created_at"]) || "";
+        const bc = pickField(b, ["created","createdon","CreatedOn","Created","created_at"]) || "";
+        return String(bc).localeCompare(String(ac));
+      });
 
       reqTbody.innerHTML = "";
       for (const r of reqs){
-        const created = r.created ? new Date(r.created).toLocaleString() : (r.created || "—");
-        const days = r.daysCount ?? "—";
-        const type = r.requestType ?? "—";
-        const status = statusPillFor(r.status);
-        const details = (r.approvalSummary || "").toString().slice(0, 120) + ((r.approvalSummary||"").length>120 ? "…" : "");
+        const createdRaw = pickField(r, ["created","createdon","CreatedOn","Created","created_at"]);
+        const created = createdRaw ? new Date(createdRaw).toLocaleString() : "—";
+
+        const days = pickField(r, ["daysCount","DaysCount","dayscount"]) ?? "—";
+        const type = pickField(r, ["requestType","RequestType","type"]) ?? "—";
+
+        const statusRaw =
+          pickField(r, ["statusLabel", "StatusLabel", "creda_status_label"]) ??
+          pickField(r, ["status","Status","req_status","requeststatus","creda_status"]);
+
+        const status = statusPillFor(statusRaw);
+
+        const just = pickField(r, ["justification","Justification"]);
+        const justShort = shorten(just, 110);
+
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${created}</td>
+          <td class="wrap">${created}</td>
           <td>${days}</td>
           <td>${type}</td>
           <td>${status}</td>
-          <td class="muted">${details || "—"}</td>
+          <td class="muted wrap">${justShort}</td>
+          <td><button class="btn-ghost" type="button">Show</button></td>
         `;
+        row.querySelector("button").addEventListener("click", () => openDetails(r));
         reqTbody.appendChild(row);
       }
     }
 
-    // ===== Actions =====
+    function renderPending(pending){
+      pendingCountText.textContent = `${pending.length} pending`;
+      if (!pending.length){
+        pendingTbody.innerHTML = `<tr><td colspan="6" class="muted">No pending approvals.</td></tr>`;
+        return;
+      }
+
+      pendingTbody.innerHTML = "";
+      for (const p of pending){
+        const emp = pickField(p, ["employeeEmail","EmployeeEmail"]) || "—";
+        const days = pickField(p, ["daysCount","DaysCount"]) ?? "—";
+        const type = pickField(p, ["requestType","RequestType"]) ?? "—";
+        const dates = pickField(p, ["datesJson","DatesJson","dates"]) ?? "—";
+        const just = pickField(p, ["justification","Justification"]) ?? "—";
+
+        const datesShort = shorten(prettyDates(dates).replace(/\n/g,", "), 80);
+        const justShort = shorten(just, 90);
+
+        const id = pickField(p, ["id","requestId","RequestId"]) || "";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="wrap">${emp}</td>
+          <td>${days}</td>
+          <td>${type}</td>
+          <td class="muted wrap">${datesShort}</td>
+          <td class="muted wrap">${justShort}</td>
+          <td>
+            <div class="actionStack">
+              <button class="btn-ghost" data-show="${id}" type="button">Show</button>
+              <button class="btn-primary" data-approve="${id}" type="button">Approve</button>
+              <button class="btn-danger" data-reject="${id}" type="button">Reject</button>
+            </div>
+          </td>
+        `;
+
+        row.querySelector("button[data-show]").addEventListener("click", () => openDetails(p));
+        row.querySelector("button[data-approve]").addEventListener("click", async () => {
+          const rid = row.querySelector("button[data-approve]").getAttribute("data-approve");
+          await approveRequest(rid);
+        });
+        row.querySelector("button[data-reject]").addEventListener("click", () => {
+          const rid = row.querySelector("button[data-reject]").getAttribute("data-reject");
+          openReject(rid);
+        });
+
+        pendingTbody.appendChild(row);
+      }
+    }
+
+    // ===== Login / OTP =====
     btnSend.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
-     // if (!email || !email.includes("@")) { setStatus("bad", "Enter a valid work email."); return; }
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!username || !password){
+        setStatus("bad", "Enter username and password.");
+        return;
+      }
 
       setLoading("send", true);
       setStatus("warn", "Sending OTP…");
 
-      const { data } = await postJSON(FLOW_SEND_OTP, { email });
+      const { data } = await postJSON(FLOW_SEND_OTP, { username, password });
 
       setLoading("send", false);
 
@@ -608,7 +1116,7 @@
         return;
       }
 
-      setStatus("good", "OTP sent. Check your inbox.");
+      setStatus("good", "OTP sent. Check your email.");
       otpBox.classList.remove("hidden");
       otpInput.value = "";
       otpInput.focus();
@@ -618,14 +1126,17 @@
     btnResend.addEventListener("click", () => btnSend.click());
 
     btnVerify.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
+      const username = usernameInput.value.trim();
       const otp = otpInput.value.trim().replace(/\s+/g,"");
-      if (!/^\d{6}$/.test(otp)){ setStatus("bad", "OTP must be 6 digits."); return; }
+      if (!/^\d{6}$/.test(otp)){
+        setStatus("bad", "OTP must be 6 digits.");
+        return;
+      }
 
       setLoading("verify", true);
       setStatus("warn", "Verifying…");
 
-      const { data } = await postJSON(FLOW_VERIFY_OTP, { email, otp });
+      const { data } = await postJSON(FLOW_VERIFY_OTP, { username, otp });
 
       setLoading("verify", false);
 
@@ -635,36 +1146,58 @@
         return;
       }
 
-      // Save token
       saveSession({ token: data.token, expiresAt: data.expiresAt });
       showToast("Welcome");
-      await loadDashboard();
+      await loadEverything();
     });
 
+    // ===== App data =====
     async function loadDashboard(){
       const s = loadSession();
-      if (!s?.token){ showLogin(); return; }
+      if (!s?.token){ showLogin(); return null; }
 
-      setStatus("warn", "Loading dashboard…");
       const { data } = await postJSON(FLOW_DASHBOARD, { token: s.token });
 
       if (!data.success){
         clearSession();
         setStatus("bad", data.message || "Session expired. Please login again.");
         showLogin();
-        return;
+        return null;
       }
+      return data;
+    }
+
+    async function loadApprovals(){
+      const s = loadSession();
+      if (!s?.token) return [];
+      const { data } = await postJSON(FLOW_APPROVALS_LIST, { token: s.token });
+      if (!data.success) return [];
+      return data.pendingApprovals || [];
+    }
+
+    async function loadEverything(){
+      setStatus("warn", "Loading…");
+      const dash = await loadDashboard();
+      if (!dash) return;
 
       showApp();
-      meText.textContent = `${data.displayName || data.email}`;
-      lieuDaysText.textContent = String(data.lieuDays ?? 0);
-      approversText.textContent = `Approvers: Supervisor (${data.supervisorEmail || "—"}) • Assistant Director (${data.assistantDirectorEmail || "—"})`;
+      meText.textContent = `${dash.displayName || dash.username || dash.email || ""}`;
+      cachedLieuBalance = Number(dash.lieuDays ?? 0);
+      lieuDaysText.textContent = String(cachedLieuBalance);
 
-      renderRequests(data.requests || []);
+      approversText.textContent =
+        `Approvers: Supervisor (${dash.supervisorEmail || "—"}) • Assistant Director (${dash.assistantDirectorEmail || "—"})`;
+      approverHint.textContent = "If you are an approver, pending requests will appear below.";
+
+      renderRequests(dash.requests || []);
+
+      const pending = await loadApprovals();
+      renderPending(pending);
+
       setStatus("good", "Ready.");
     }
 
-    btnRefresh.addEventListener("click", loadDashboard);
+    btnRefresh.addEventListener("click", loadEverything);
 
     btnSubmit.addEventListener("click", async () => {
       const s = loadSession();
@@ -702,23 +1235,178 @@
 
       setStatus("good", "Request submitted for approval.");
       showToast("Submitted");
-      // reset form
       selectedDates = [];
       renderDates();
       justification.value = "";
-      // refresh list
-      await loadDashboard();
+      await loadEverything();
     });
 
-    btnLogout.addEventListener("click", () => {
-      clearSession();
-      showToast("Logged out");
-      showLogin();
+    btnLogout.addEventListener("click", async () => {
+  const s = loadSession();
+  if (s?.token) {
+    await postJSON(FLOW_LOGOUT, { token: s.token });
+  }
+  clearSession();
+  showToast("Logged out");
+  showLogin();
+});
+
+
+    // ===== Take Lieu Days UI =====
+    btnTakeLieu.addEventListener("click", () => {
+      takeDates = [];
+      takeJustification.value = "";
+      renderTakeDates();
+      takeLieuModal.style.display = "flex";
+      takeDatePick.focus();
+    });
+
+    btnTakeCancel.addEventListener("click", () => {
+      takeLieuModal.style.display = "none";
+    });
+
+    takeLieuModal.addEventListener("click", (e) => {
+      if (e.target === takeLieuModal) takeLieuModal.style.display = "none";
+    });
+
+    btnTakeSubmit.addEventListener("click", async () => {
+      const s = loadSession();
+      if (!s?.token){ showLogin(); return; }
+
+      if (!takeDates.length){
+        setStatus("bad", "Please select at least one date.");
+        return;
+      }
+
+      // Client-side sanity: don't allow requesting more than current balance
+      if (Number.isFinite(cachedLieuBalance) && takeDates.length > cachedLieuBalance){
+        setStatus("bad", `You selected ${takeDates.length} day(s) but your balance is ${cachedLieuBalance}.`);
+        return;
+      }
+
+      setLoading("take", true);
+      setStatus("warn", "Submitting Take Lieu Days request…");
+
+      const payload = {
+        token: s.token,
+        dates: takeDates,
+        justification: takeJustification.value.trim() || ""
+      };
+
+      const { data } = await postJSON(FLOW_TAKE_LIEU_DAYS, payload);
+
+      setLoading("take", false);
+
+      if (!data.success){
+        setStatus("bad", data.message || "Submit failed.");
+        showToast("Take Lieu Days failed");
+        return;
+      }
+
+      takeLieuModal.style.display = "none";
+      setStatus("good", "Take Lieu Days request submitted.");
+      showToast("Submitted");
+      await loadEverything();
+    });
+
+    // ===== Approve / Reject =====
+    async function approveRequest(requestId){
+      const s = loadSession();
+      if (!s?.token) return;
+      if (!requestId){
+        setStatus("bad", "Invalid request id.");
+        return;
+      }
+
+      setStatus("warn", "Approving…");
+      const { data } = await postJSON(FLOW_APPROVE, { token: s.token, requestId });
+
+      if (!data.success){
+        setStatus("bad", data.message || "Approve failed.");
+        return;
+      }
+      setStatus("good", "Approved.");
+      showToast("Approved");
+      await loadEverything();
+    }
+
+    function openReject(requestId){
+      pendingRejectRequestId = requestId;
+      rejReason.value = "";
+      rejModal.style.display = "flex";
+      rejReason.focus();
+    }
+
+    btnRejCancel.addEventListener("click", () => {
+      pendingRejectRequestId = null;
+      rejModal.style.display = "none";
+    });
+
+    btnRejConfirm.addEventListener("click", async () => {
+      const s = loadSession();
+      if (!s?.token || !pendingRejectRequestId) return;
+
+      const reason = rejReason.value.trim();
+      if (reason.length < 3){
+        setStatus("bad", "Write a short rejection reason.");
+        return;
+      }
+
+      setStatus("warn", "Rejecting…");
+      const { data } = await postJSON(FLOW_REJECT, { token: s.token, requestId: pendingRejectRequestId, reason });
+
+      if (!data.success){
+        setStatus("bad", data.message || "Reject failed.");
+        return;
+      }
+
+      rejModal.style.display = "none";
+      pendingRejectRequestId = null;
+      setStatus("good", "Rejected.");
+      showToast("Rejected");
+      await loadEverything();
+    });
+
+    // ===== Change password =====
+    btnChangePw.addEventListener("click", () => {
+      oldPw.value = "";
+      newPw.value = "";
+      pwModal.style.display = "flex";
+      oldPw.focus();
+    });
+
+    btnPwCancel.addEventListener("click", () => {
+      pwModal.style.display = "none";
+    });
+
+    btnPwSave.addEventListener("click", async () => {
+      const s = loadSession();
+      if (!s?.token) return;
+
+      const op = oldPw.value;
+      const np = newPw.value;
+
+      if (!op || !np || np.length < 8){
+        setStatus("bad", "New password must be at least 8 characters.");
+        return;
+      }
+
+      setStatus("warn", "Updating password…");
+      const { data } = await postJSON(FLOW_CHANGE_PW, { token: s.token, oldPassword: op, newPassword: np });
+
+      if (!data.success){
+        setStatus("bad", data.message || "Change password failed.");
+        return;
+      }
+
+      pwModal.style.display = "none";
+      setStatus("good", "Password updated.");
+      showToast("Password updated");
     });
 
     // init
     renderDates();
-    loadDashboard();
+    loadEverything();
   </script>
 </body>
 </html>
