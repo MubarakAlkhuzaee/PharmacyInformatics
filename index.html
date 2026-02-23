@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lieu Days Portal</title>
+  <title>Informatics Portal</title>
 
   <style>
     :root{
@@ -326,14 +326,16 @@
 
     .modalBackdrop{
       position:fixed; inset:0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.75);
       display:none;
       align-items:center; justify-content:center;
       padding:18px;
     }
     .modal{
       width:min(680px, 100%);
-      background: linear-gradient(180deg, var(--card), var(--card2));
+      background:
+        linear-gradient(180deg, var(--card), var(--card2)),
+        rgba(7,17,15,0.96);
       border:1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -376,8 +378,8 @@
         <img class="logoImg" src="InformaticsLogo.svg" alt="Logo" onerror="this.onerror=null; this.src='InformaticsLogo.png';" />
       </div>
       <div class="brand">
-        <div class="title">Lieu Days & Overtime Portal</div>
-        <div class="subtitle">Login → OTP • Submit requests • Approvals • Tracking</div>
+        <div class="title">Informatics Portal</div>
+        <div class="subtitle">Lieu Days Approval & Tracking System</div>
       </div>
     </header>
 
@@ -470,7 +472,7 @@
               <div>
                 <label for="reqType">Reimbursement Type</label>
                 <select id="reqType">
-                  <option value="Paid Overtime">Paid Overtime</option>
+
                   <option value="Lieu Days">Lieu Days</option>
                 </select>
                 <div class="muted" style="margin-top:8px;">If approved as <b>Lieu Days</b>, the days will be added to your balance.</div>
@@ -980,8 +982,8 @@
       const status = pickField(r, ["status","Status","req_status","requeststatus"]) ?? "—";
       const type   = pickField(r, ["requestType","RequestType","type"]) ?? "—";
       const days   = pickField(r, ["daysCount","DaysCount","dayscount"]) ?? "—";
-      const dates  = pickField(r, ["datesJson","DatesJson","datesjson","dates"]) ?? "—";
-      const just   = pickField(r, ["justification","Justification"]) ?? "—";
+      const dates  = pickField(r, ["datesJson","DatesJson","datesjson","dates","datesJSON","DatesJSON","_computedDates"]) ?? "—";
+      const just   = pickField(r, ["justification","Justification","_computedJust"]) ?? "—";
       const summary= pickField(r, ["approvalSummary","ApprovalSummary","summary"]) ??
                      pickField(r, ["rejectedReason","RejectedReason"]) ??
                      "—";
@@ -1029,6 +1031,8 @@
         const just = pickField(r, ["justification","Justification"]);
         const justShort = shorten(just, 110);
 
+        const enriched = { ...r, _computedJust: just };
+
         const row = document.createElement("tr");
         row.innerHTML = `
           <td class="wrap">${created}</td>
@@ -1038,7 +1042,7 @@
           <td class="muted wrap">${justShort}</td>
           <td><button class="btn-ghost" type="button">Show</button></td>
         `;
-        row.querySelector("button").addEventListener("click", () => openDetails(r));
+        row.querySelector("button").addEventListener("click", () => openDetails(enriched));
         reqTbody.appendChild(row);
       }
     }
@@ -1063,6 +1067,8 @@
 
         const id = pickField(p, ["id","requestId","RequestId"]) || "";
 
+        const enriched = { ...p, _computedDates: dates, _computedJust: just };
+
         const row = document.createElement("tr");
         row.innerHTML = `
           <td class="wrap">${emp}</td>
@@ -1079,7 +1085,7 @@
           </td>
         `;
 
-        row.querySelector("button[data-show]").addEventListener("click", () => openDetails(p));
+        row.querySelector("button[data-show]").addEventListener("click", () => openDetails(enriched));
         row.querySelector("button[data-approve]").addEventListener("click", async () => {
           const rid = row.querySelector("button[data-approve]").getAttribute("data-approve");
           await approveRequest(rid);
