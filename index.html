@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Informatics Portal</title>
 
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    base-uri 'self';
+    object-src 'none';
+    frame-ancestors 'none';
+    img-src 'self' data:;
+    style-src 'self' 'unsafe-inline';
+    script-src 'self' 'unsafe-inline';
+    connect-src 'self' https:;
+    form-action 'self';
+    upgrade-insecure-requests;
+  " />
+
   <style>
     :root{
       --bg0:#07110F; --bg1:#0A1714;
@@ -19,11 +32,9 @@
       --radius: 18px;
       --ease: cubic-bezier(.2,.9,.2,1);
     }
-
     *{ box-sizing:border-box; }
     html, body{ height:100%; }
     html{ font-size: clamp(14px, 1.0vw, 16px); }
-
     body{
       margin:0; color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
@@ -36,7 +47,6 @@
       background-attachment: fixed;
       background-repeat: no-repeat;
     }
-
     .bg-shimmer{
       position:fixed; inset:-40%;
       background: linear-gradient(120deg,
@@ -53,23 +63,20 @@
       opacity:.65;
     }
     @keyframes shimmer{ 0%{transform:translateX(-25%) rotate(5deg);} 100%{transform:translateX(25%) rotate(5deg);} }
-
     .wrap{
-      width:min(980px, calc(100% - 32px));
+      width:min(1080px, calc(100% - 32px));
       margin: 44px auto 60px;
       position:relative;
       animation: enter 700ms var(--ease) both;
       min-width:0;
     }
     @keyframes enter{ from{opacity:0; transform:translateY(16px) scale(.985);} to{opacity:1; transform:translateY(0) scale(1);} }
-
     header{
       display:flex; align-items:center; gap:16px;
       margin-bottom:14px;
       flex-wrap:wrap;
       min-width:0;
     }
-
     .logoWrap{
       width: clamp(104px, 16vw, 190px);
       height: clamp(104px, 16vw, 190px);
@@ -93,7 +100,6 @@
       height: calc(clamp(104px, 16vw, 190px) - 16px);
       object-fit:contain; display:block; position:relative; z-index:1;
     }
-
     .brand{
       display:flex; flex-direction:column; line-height:1.1;
       min-width:0;
@@ -111,7 +117,6 @@
       margin-top:6px;
       overflow-wrap:anywhere;
     }
-
     .card{
       background: linear-gradient(180deg, var(--card), var(--card2));
       border: 1px solid var(--stroke);
@@ -131,13 +136,11 @@
       opacity:0.95; pointer-events:none; filter: blur(16px);
     }
     .card > *{ position:relative; z-index:1; }
-
     .grid{ display:grid; gap:14px; min-width:0; }
     .row{
       display:flex; gap:12px; flex-wrap:wrap; align-items:center;
       min-width:0;
     }
-
     label{ display:block; font-size:0.92rem; color:var(--muted); margin-bottom:8px; user-select:none; }
     input, select, textarea{
       width:100%;
@@ -157,10 +160,13 @@
       box-shadow: 0 0 0 4px rgba(76,148,133,0.16);
       transform: translateY(-1px);
     }
-    input[type="date"]{ color-scheme: dark; }
-    input[type="date"]::-webkit-calendar-picker-indicator{ filter: invert(1); opacity: .9; cursor:pointer; }
-    input[type="date"]::-webkit-calendar-picker-indicator:hover{ opacity: 1; }
-
+    input[type="date"], input[type="time"]{ color-scheme: dark; }
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator{
+      cursor: pointer;
+      opacity: 1;
+      filter: brightness(0) saturate(100%) invert(92%) sepia(18%) saturate(296%) hue-rotate(343deg) brightness(103%) contrast(91%);
+    }
     button{
       border:0; border-radius: 14px;
       padding: 12px 14px;
@@ -173,28 +179,24 @@
     }
     button:active{ transform: translateY(1px) scale(0.99); }
     button:disabled{ cursor:not-allowed; opacity:.55; }
-
     .btn-primary{
       background: linear-gradient(135deg, var(--teal), var(--deep));
       color: rgba(7,17,15,0.96);
       box-shadow: 0 16px 34px rgba(76,148,133,0.18);
     }
     .btn-primary:hover{ filter: brightness(1.06); transform: translateY(-1px); }
-
     .btn-ghost{
       background: rgba(242,234,213,0.08);
       border: 1px solid rgba(242,234,213,0.18);
       color: var(--text);
     }
     .btn-ghost:hover{ background: rgba(242,234,213,0.11); transform: translateY(-1px); }
-
     .btn-danger{
       background: rgba(255,90,95,0.16);
       border: 1px solid rgba(255,90,95,0.38);
       color: rgba(255,90,95,0.98);
     }
     .btn-danger:hover{ background: rgba(255,90,95,0.22); transform: translateY(-1px); }
-
     .status{
       display:flex; align-items:center; gap:10px;
       color: var(--muted);
@@ -204,7 +206,6 @@
       flex-wrap: wrap;
       min-width:0;
     }
-
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding: 6px 10px; border-radius: 999px;
@@ -224,6 +225,11 @@
     .pill.pending{ border-color: rgba(247,185,85,0.35); color: rgba(247,185,85,0.95); }
     .pill.approved{ border-color: rgba(50,213,131,0.35); color: rgba(50,213,131,0.95); }
     .pill.rejected{ border-color: rgba(255,90,95,0.35); color: rgba(255,90,95,0.95); }
+    .pill.info{ border-color: rgba(242,234,213,0.22); color: rgba(242,234,213,0.92); }
+    .signedDays{ display:inline-flex; align-items:center; gap:6px; font-weight:950; }
+    .signedDays.plus{ color:#7FC8FF; }
+    .signedDays.minus{ color:rgba(255,90,95,0.98); }
+    .signedMark{ font-size:1.05em; line-height:1; }
 
     .box{
       border-radius: 16px;
@@ -233,7 +239,6 @@
       min-width:0;
       overflow:hidden;
     }
-
     .chips{ display:flex; flex-wrap:wrap; gap:8px; min-width:0; }
     .chip{
       display:inline-flex; align-items:center; gap:8px;
@@ -254,7 +259,6 @@
       cursor:pointer;
       font-weight:950;
     }
-
     .tableWrap{
       overflow-x: auto;
       overflow-y: hidden;
@@ -266,7 +270,7 @@
       width:100%;
       border-collapse: collapse;
       table-layout: auto;
-      min-width: 720px;
+      min-width: 760px;
     }
     th, td{
       text-align:left;
@@ -281,7 +285,6 @@
       overflow-wrap: anywhere;
       word-break: break-word;
     }
-
     .actionStack{
       display:flex;
       gap:8px;
@@ -289,10 +292,8 @@
       justify-content: flex-end;
       min-width: 160px;
     }
-
     .muted{ color: rgba(242,234,213,0.72); }
     .hidden{ display:none !important; }
-
     .spinner{
       width:16px; height:16px; border-radius:50%;
       border: 2px solid rgba(7,17,15,0.25);
@@ -302,7 +303,6 @@
       flex:0 0 auto;
     }
     @keyframes spin{ to{ transform: rotate(360deg); } }
-
     .toast{
       position:fixed; left:50%; bottom:18px; transform: translateX(-50%);
       background: rgba(0,0,0,0.60);
@@ -323,16 +323,16 @@
       85%{ opacity:1; transform: translateX(-50%) translateY(0); }
       100%{ opacity:0; transform: translateX(-50%) translateY(10px); }
     }
-
     .modalBackdrop{
       position:fixed; inset:0;
       background: rgba(0,0,0,0.75);
       display:none;
       align-items:center; justify-content:center;
       padding:18px;
+      z-index:1000;
     }
     .modal{
-      width:min(680px, 100%);
+      width:min(980px, 100%);
       background:
         linear-gradient(180deg, var(--card), var(--card2)),
         rgba(7,17,15,0.96);
@@ -341,11 +341,16 @@
       box-shadow: var(--shadow);
       padding:16px;
       min-width:0;
+      max-height: calc(100vh - 36px);
+      overflow:auto;
+    }
+    .modal-wide{
+      width:min(1180px, 100%);
     }
     .modal h3{ margin:0 0 10px; font-size:1.1rem; }
     .kv{
       display:grid;
-      grid-template-columns: 140px minmax(0, 1fr);
+      grid-template-columns: 160px minmax(0, 1fr);
       gap:10px;
       align-items:start;
       margin-top:10px;
@@ -366,6 +371,67 @@
       color: rgba(242,234,213,0.92);
       min-width:0;
     }
+    .radioGroup{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:2px;
+    }
+    .radioCard{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(242,234,213,0.16);
+      background: rgba(0,0,0,0.18);
+      cursor:pointer;
+      font-weight:900;
+      color: rgba(242,234,213,0.92);
+    }
+    .radioCard input{
+      width:auto;
+      margin:0;
+      transform: translateY(1px);
+    }
+    .twoCol{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 720px){
+      .twoCol{ grid-template-columns: 1fr; }
+    }
+    .threeCol{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    @media (max-width: 860px){
+      .threeCol{ grid-template-columns: 1fr; }
+    }
+    .historyTableWrap{
+      overflow:auto;
+      border-radius:14px;
+      border:1px solid rgba(242,234,213,0.12);
+      background: rgba(0,0,0,0.16);
+    }
+    .historyTable{
+      width:100%;
+      min-width: 860px;
+      border-collapse: collapse;
+    }
+    .historyTable th, .historyTable td{
+      padding:10px;
+      border-bottom:1px solid rgba(242,234,213,0.08);
+      white-space: normal;
+      vertical-align: top;
+      text-align:left;
+    }
+    .historyEmpty{
+      padding:14px;
+      color: rgba(242,234,213,0.72);
+    }
   </style>
 </head>
 
@@ -379,12 +445,11 @@
       </div>
       <div class="brand">
         <div class="title">Informatics Portal</div>
-        <div class="subtitle">Lieu Days Approval & Tracking System</div>
+        <div class="subtitle">Lieu Days Approval & Tracking System (PILOT TEST)</div>
       </div>
     </header>
 
     <div class="card">
-      <!-- LOGIN VIEW -->
       <div id="viewLogin" class="grid">
         <div class="box">
           <div class="grid">
@@ -395,7 +460,7 @@
             <div>
               <label for="password">Password</label>
               <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
-              <div class="muted" style="margin-top:8px;">If username/password is correct, we will send OTP to your email.</div>
+              <div class="muted" style="margin-top:8px;">If username/password is correct, we will send an OTP to your email.</div>
             </div>
             <div class="row">
               <button class="btn-primary" id="btnSend" type="button">
@@ -422,7 +487,6 @@
         </div>
       </div>
 
-      <!-- APP VIEW -->
       <div id="viewApp" class="grid hidden">
         <div class="row" style="justify-content: space-between;">
           <div class="status" style="margin:0;">
@@ -430,52 +494,99 @@
             <span id="meText" style="overflow-wrap:anywhere; min-width:0;"></span>
           </div>
           <div class="row">
+            <button class="btn-ghost" id="btnAllBalances" type="button">📊 View All Employee Balances</button>
             <button class="btn-ghost" id="btnChangePw" type="button">🔐 Change Password</button>
             <button class="btn-ghost" id="btnRefresh" type="button">🔄 Refresh</button>
             <button class="btn-ghost" id="btnLogout" type="button">🚪 Logout</button>
           </div>
         </div>
 
-        <!-- ✅ SINGLE COLUMN STACK -->
         <div class="grid">
-          <!-- Balance -->
           <div class="box">
             <div class="row" style="justify-content: space-between; align-items: flex-start;">
               <div style="min-width:0;">
-                <div class="muted">Remaining Lieu Days</div>
+                <div class="muted">Remaining Lieu Balance</div>
                 <div style="font-size:clamp(1.6rem, 2.2vw, 2.1rem); font-weight:950; margin-top:4px;" id="lieuDaysText">—</div>
               </div>
 
               <div class="row" style="justify-content:flex-end;">
-                <button class="btn-primary" id="btnTakeLieu" type="button">🗓️ Take Lieu Days</button>
-                <div class="pill" id="balancePill">Balance</div>
+                <button class="btn-primary" id="btnTakeLieu" type="button">🗓️ Take Lieu</button>
               </div>
             </div>
             <div class="muted" style="margin-top:10px;" id="approversText"></div>
             <div class="muted" style="margin-top:6px;" id="approverHint"></div>
           </div>
 
-          <!-- Submit Overtime -->
           <div class="box">
             <div style="font-weight:950; font-size:1.05rem; margin-bottom:10px;">Submit Overtime Reimbursement</div>
             <div class="grid">
               <div>
-                <label>Add Covered Day</label>
-                <div class="row">
-                  <input id="datePick" type="date" />
-                  <button class="btn-ghost" id="btnClearDates" type="button">🧹 Clear</button>
+                <label>Reimbursement Type</label>
+                <div class="radioGroup" id="requestTypeGroup">
+                  <label class="radioCard">
+                    <input type="radio" name="requestType" value="Lieu Days" checked />
+                    <span>Lieu Days</span>
+                  </label>
+                  <label class="radioCard">
+                    <input type="radio" name="requestType" value="Lieu Hours" />
+                    <span>Lieu Hours</span>
+                  </label>
+                  <label class="radioCard">
+                    <input type="radio" name="requestType" value="Holiday" />
+                    <span>Holiday</span>
+                  </label>
                 </div>
-                <div class="muted" style="margin-top:8px;">Selected days: <b id="daysCountText">0</b></div>
-                <div class="chips" id="chips"></div>
+                <div class="muted" id="requestTypeHint" style="margin-top:8px;">
+                   
+                </div>
               </div>
 
-              <div>
-                <label for="reqType">Reimbursement Type</label>
-                <select id="reqType">
+              <div id="submitRangeBox">
+                <label>Add Date Range</label>
+                <div class="twoCol">
+                  <div>
+                    <label for="dateFrom" style="margin-bottom:6px;">From</label>
+                    <input id="dateFrom" type="date" />
+                  </div>
+                  <div>
+                    <label for="dateTo" style="margin-bottom:6px;">To</label>
+                    <input id="dateTo" type="date" />
+                  </div>
+                </div>
+              </div>
 
-                  <option value="Lieu Days">Lieu Days</option>
-                </select>
-                <div class="muted" style="margin-top:8px;">If approved as <b>Lieu Days</b>, the days will be added to your balance.</div>
+              <div id="submitIndividualBox">
+                <label>Add Individual Date</label>
+                <div>
+                  <input id="individualDate" type="date" />
+                </div>
+              </div>
+
+              <div id="submitSingleBox" class="hidden">
+                <label>Lieu Hours Date &amp; Time</label>
+                <div class="threeCol">
+                  <div>
+                    <label for="singleDate" style="margin-bottom:6px;">Date</label>
+                    <input id="singleDate" type="date" />
+                  </div>
+                  <div>
+                    <label for="singleTimeFrom" style="margin-bottom:6px;">From Time</label>
+                    <input id="singleTimeFrom" type="time" />
+                  </div>
+                  <div>
+                    <label for="singleTimeTo" style="margin-bottom:6px;">To Time</label>
+                    <input id="singleTimeTo" type="time" />
+                  </div>
+                </div>
+                <div class="muted" style="margin-top:8px;">Select one date and the time frame.</div>
+              </div>
+
+              <div class="box">
+                <div class="muted">Selected dates: <b id="daysCountText">0</b></div>
+                <div class="chips" id="chips" style="margin-top:10px;"></div>
+                <div class="row" style="margin-top:10px;">
+                  <button class="btn-ghost" id="btnClearDates" type="button">🧹 Clear</button>
+                </div>
               </div>
 
               <div>
@@ -491,7 +602,6 @@
             </div>
           </div>
 
-          <!-- Pending With Me -->
           <div class="box" id="approvalsBox">
             <div class="row" style="justify-content: space-between; margin-bottom:10px;">
               <div style="font-weight:950; font-size:1.05rem;">Pending With Me</div>
@@ -502,11 +612,11 @@
               <table>
                 <thead>
                   <tr>
-                    <th class="wrap">Employee</th>
-                    <th>Days</th>
+                    <th class="wrap">Date (Created)</th>
+                    <th class="wrap">Name</th>
+                    <th>Badge</th>
+                    <th>Duration</th>
                     <th>Type</th>
-                    <th class="wrap">Dates</th>
-                    <th class="wrap">Justification</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -517,7 +627,6 @@
             </div>
           </div>
 
-          <!-- My Requests -->
           <div class="box">
             <div class="row" style="justify-content: space-between; margin-bottom:10px;">
               <div style="font-weight:950; font-size:1.05rem;">My Requests</div>
@@ -528,25 +637,22 @@
               <table>
                 <thead>
                   <tr>
-                    <th class="wrap">Date</th>
-                    <th>Days</th>
+                    <th class="wrap">Date (Created)</th>
+                    <th>Duration</th>
                     <th>Type</th>
                     <th>Status</th>
-                    <th class="wrap">Justification</th>
                     <th>Details</th>
                   </tr>
                 </thead>
                 <tbody id="reqTbody">
-                  <tr><td colspan="6" class="muted">No data yet.</td></tr>
+                  <tr><td colspan="5" class="muted">No data yet.</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- Shared status line -->
       <div class="status" id="status">
         <span class="pill" id="statusPill" style="display:none;"></span>
         <span id="statusText"></span>
@@ -556,7 +662,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- Change password modal -->
   <div class="modalBackdrop" id="pwModal">
     <div class="modal">
       <h3>Change Password</h3>
@@ -578,7 +683,6 @@
     </div>
   </div>
 
-  <!-- Reject reason modal -->
   <div class="modalBackdrop" id="rejModal">
     <div class="modal">
       <h3>Reject Request</h3>
@@ -595,28 +699,75 @@
     </div>
   </div>
 
-  <!-- Details modal -->
   <div class="modalBackdrop" id="detailsModal">
-    <div class="modal">
-      <h3>Request Details</h3>
-      <div class="kv">
+    <div class="modal modal-wide">
+      <h3 id="detailsTitle">Request Details</h3>
+
+      <div class="kv" id="detailsGrid">
         <div class="k">Status</div>
-        <div id="dStatus" class="prebox"></div>
+        <div id="dStatusLabel" class="prebox"></div>
 
         <div class="k">Type</div>
         <div id="dType" class="prebox"></div>
 
-        <div class="k">Days</div>
+        <div class="k">Duration</div>
         <div id="dDays" class="prebox"></div>
 
         <div class="k">Dates</div>
         <div id="dDates" class="prebox"></div>
 
+        <div class="k">TimeFrom</div>
+        <div id="dTimeFrom" class="prebox"></div>
+
+        <div class="k">TimeTo</div>
+        <div id="dTimeTo" class="prebox"></div>
+
         <div class="k">Justification</div>
         <div id="dJust" class="prebox"></div>
 
-        <div class="k">Summary</div>
-        <div id="dSummary" class="prebox"></div>
+        <div class="k">Employee Balance</div>
+        <div id="dBalance" class="prebox"></div>
+      </div>
+
+      <div class="kv hidden" id="historyGrid">
+        <div class="k">Name</div>
+        <div id="hName" class="prebox"></div>
+
+        <div class="k">Badge</div>
+        <div id="hBadge" class="prebox"></div>
+
+        <div class="k">LieuDays</div>
+        <div id="hLieuDays" class="prebox"></div>
+
+        <div class="k">Legacy system summary</div>
+        <div id="dCredaSummary" class="prebox"></div>
+
+        <div class="k">Approved Requests</div>
+        <div>
+          <div id="dApprovedRequestsStatus" class="muted" style="margin-bottom:8px;"></div>
+          <div class="historyTableWrap">
+            <table class="historyTable">
+              <thead>
+                <tr>
+                  <th>Created</th>
+                  <th>Type</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Dates</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="historyTbody">
+                <tr><td colspan="6" class="historyEmpty">No approved requests found.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row hidden" id="detailsPendingActions" style="justify-content:flex-end; margin-top:12px;">
+        <button class="btn-primary" id="btnDetailsApprove" type="button">Approve</button>
+        <button class="btn-danger" id="btnDetailsReject" type="button">Reject</button>
       </div>
 
       <div class="row" style="justify-content:flex-end; margin-top:12px;">
@@ -625,24 +776,76 @@
     </div>
   </div>
 
-  <!-- ✅ Take Lieu Days modal -->
   <div class="modalBackdrop" id="takeLieuModal">
     <div class="modal">
-      <h3>Take Lieu Days</h3>
-      <div class="muted">Pick the dates you want to take as Lieu Days. This will go to Supervisor + Assistant Director approval. After final approval, days will be deducted from your balance.</div>
+      <h3>Take Lieu</h3>
+      <div class="muted">Pick the dates you want to take. This will go to Supervisor + Assistant Director approval. After final approval, the balance will be deducted.</div>
 
       <div class="grid" style="margin-top:12px;">
         <div>
-          <label for="takeDatePick">Add Date</label>
-          <div class="row">
-            <input id="takeDatePick" type="date" />
-            <button class="btn-ghost" id="btnTakeClear" type="button">🧹 Clear</button>
+          <label>Take Type</label>
+          <div class="radioGroup" id="takeTypeGroup">
+            <label class="radioCard">
+              <input type="radio" name="takeType" value="Take Lieu Days" checked />
+              <span>Take Lieu Days</span>
+            </label>
+            <label class="radioCard">
+              <input type="radio" name="takeType" value="Take Lieu Hours" />
+              <span>Take Lieu Hours</span>
+            </label>
           </div>
-          <div class="muted" style="margin-top:8px;">
-            Selected days: <b id="takeDaysCountText">0</b>
+          <div class="muted" id="takeTypeHint" style="margin-top:8px;"> </div>
+        </div>
+
+        <div id="takeRangeBox">
+          <label>Add Date Range</label>
+          <div class="twoCol">
+            <div>
+              <label for="takeDateFrom" style="margin-bottom:6px;">From</label>
+              <input id="takeDateFrom" type="date" />
+            </div>
+            <div>
+              <label for="takeDateTo" style="margin-bottom:6px;">To</label>
+              <input id="takeDateTo" type="date" />
+            </div>
+          </div>
+        </div>
+
+        <div id="takeIndividualBox">
+          <label>Add Individual Date</label>
+          <div>
+            <input id="takeIndividualDate" type="date" />
+          </div>
+        </div>
+
+        <div id="takeSingleBox" class="hidden">
+          <label>Take Lieu Hours Date &amp; Time</label>
+          <div class="threeCol">
+            <div>
+              <label for="takeSingleDate" style="margin-bottom:6px;">Date</label>
+              <input id="takeSingleDate" type="date" />
+            </div>
+            <div>
+              <label for="takeTimeFrom" style="margin-bottom:6px;">From Time</label>
+              <input id="takeTimeFrom" type="time" />
+            </div>
+            <div>
+              <label for="takeTimeTo" style="margin-bottom:6px;">To Time</label>
+              <input id="takeTimeTo" type="time" />
+            </div>
+          </div>
+          <div class="muted" style="margin-top:8px;">Select one date and the time frame.</div>
+        </div>
+
+        <div class="box">
+          <div class="muted">
+            Selected dates: <b id="takeDaysCountText">0</b>
             <span class="muted" id="takeBalanceHint" style="margin-left:10px;"></span>
           </div>
-          <div class="chips" id="takeChips"></div>
+          <div class="chips" id="takeChips" style="margin-top:10px;"></div>
+          <div class="row" style="margin-top:10px;">
+            <button class="btn-ghost" id="btnTakeClear" type="button">🧹 Clear</button>
+          </div>
         </div>
 
         <div>
@@ -660,37 +863,63 @@
     </div>
   </div>
 
+  <div class="modalBackdrop" id="balancesModal">
+    <div class="modal modal-wide">
+      <h3>All Employee Balances</h3>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="wrap">DisplayName</th>
+              <th>Badge</th>
+              <th>LieuDays</th>
+              <th>History</th>
+            </tr>
+          </thead>
+          <tbody id="balancesTbody">
+            <tr><td colspan="4" class="muted">No data yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row" style="justify-content:flex-end; margin-top:12px;">
+        <button class="btn-ghost" id="btnBalancesClose" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // =========================
-    // CONFIG (placeholders - fill yours)
-    // =========================
     const CONFIG = {
       flows: {
-        sendOtp:        "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/897bca1db8b84232bea113328594a803/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hVUBdY8UW5Ahg-StXtBFWkfsfh3l-baJktdONKKgBpc",
-        verifyOtp:      "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9bed7a236d0844d4911edc518272b1cf/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sL2gl1lgSJPQZ4uhD3TZjlcluf1XRJU0HIYU4F-6kSg",
-        dashboard:      "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/685b89d7f89345c4920a7a8b43a4611a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UNXsp4FVh_ns1GV94mHUyXwRH0v-2V4lFAZD3XwBPzk",
-        submitRequest:  "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/18979bf969d94d0d81f250070f5be8dd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=B1EY4xm2uIYiapj0ogjOguxg9eCaEXjN7UVzUqDLp-Q",
-        approvalsList:  "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7f9e706506684aad894369d6623ce84c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ON63ffZNKE2w2lR5Ud1o9qssiv2HxJkfaxKXVUWs1NU",
-        approve:        "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dc381446869f450e89c3a649a31ce86a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Y23RS037JaBfq7c3UyQAbhU7rEtQN9EQnogEY3GDlrc",
-        reject:         "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/44ed64dac2b74035978ab589fbf5ee44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ds0l7Yo0NmnPUr6S1oHa3JJxQ_G8ecIjvSXt7et7CYk",
-        changePassword: "PASTE_CHANGE_PASSWORD_FLOW_URL_HERE",
-        logout:         "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8af68dd3ac8e466085adc6b719accc40/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=B2RYSD6-l3z5OHGp-ZVa8DW1jm1lK0CTjzXAwkt5Imc",
-        takeLieuDays:   "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dab4841186364382af41c19641dfc9c3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=p0Fu-gk6VdO7x9g3l69DPvw1plneSIAIVQAq-bPSiBc"
+        sendOtp:             "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/897bca1db8b84232bea113328594a803/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hVUBdY8UW5Ahg-StXtBFWkfsfh3l-baJktdONKKgBpc",
+        verifyOtp:           "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9bed7a236d0844d4911edc518272b1cf/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sL2gl1lgSJPQZ4uhD3TZjlcluf1XRJU0HIYU4F-6kSg",
+        dashboard:           "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/685b89d7f89345c4920a7a8b43a4611a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UNXsp4FVh_ns1GV94mHUyXwRH0v-2V4lFAZD3XwBPzk",
+        submitRequest:       "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/18979bf969d94d0d81f250070f5be8dd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=B1EY4xm2uIYiapj0ogjOguxg9eCaEXjN7UVzUqDLp-Q",
+        approvalsList:       "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/7f9e706506684aad894369d6623ce84c/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ON63ffZNKE2w2lR5Ud1o9qssiv2HxJkfaxKXVUWs1NU",
+        approve:             "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dc381446869f450e89c3a649a31ce86a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Y23RS037JaBfq7c3UyQAbhU7rEtQN9EQnogEY3GDlrc",
+        reject:              "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/44ed64dac2b74035978ab589fbf5ee44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ds0l7Yo0NmnPUr6S1oHa3JJxQ_G8ecIjvSXt7et7CYk",
+        changePassword:      "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d9c4b94e07f94d22b4e3ada6f264da77/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ToFHbIqyxxK0fnFwrZkt_zJn2Cn1ukfXjiq8SfzPc0A",
+        logout:              "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8af68dd3ac8e466085adc6b719accc40/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=B2RYSD6-l3z5OHGp-ZVa8DW1jm1lK0CTjzXAwkt5Imc",
+        takeLieuDays:        "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/dab4841186364382af41c19641dfc9c3/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=p0Fu-gk6VdO7x9g3l69DPvw1plneSIAIVQAq-bPSiBc",
+        allEmployeeBalances: "https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/5fdfacf18eed4963901eab88cc718a60/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9Ds295zeFlIWPXUhTvkg2p8i0pbM0_c6oBkSsttERig",
+        employeeApprovedHistory:"https://c4ae8179195ee9539693483972037c.56.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b9a2fdbbd98d4823b6ef5da32c505393/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZUGX0iNC3noI76u-b2NrCxnBAdDuuxxeSZIXuIJauBg"
       }
     };
 
-    const FLOW_SEND_OTP        = CONFIG.flows.sendOtp;
-    const FLOW_VERIFY_OTP      = CONFIG.flows.verifyOtp;
-    const FLOW_DASHBOARD       = CONFIG.flows.dashboard;
-    const FLOW_SUBMIT_REQUEST  = CONFIG.flows.submitRequest;
-    const FLOW_APPROVALS_LIST  = CONFIG.flows.approvalsList;
-    const FLOW_APPROVE         = CONFIG.flows.approve;
-    const FLOW_REJECT          = CONFIG.flows.reject;
-    const FLOW_CHANGE_PW       = CONFIG.flows.changePassword;
-    const FLOW_LOGOUT          = CONFIG.flows.logout;
-    const FLOW_TAKE_LIEU_DAYS  = CONFIG.flows.takeLieuDays;
+    const FLOW_SEND_OTP                  = CONFIG.flows.sendOtp;
+    const FLOW_VERIFY_OTP                = CONFIG.flows.verifyOtp;
+    const FLOW_DASHBOARD                 = CONFIG.flows.dashboard;
+    const FLOW_SUBMIT_REQUEST            = CONFIG.flows.submitRequest;
+    const FLOW_APPROVALS_LIST            = CONFIG.flows.approvalsList;
+    const FLOW_APPROVE                   = CONFIG.flows.approve;
+    const FLOW_REJECT                    = CONFIG.flows.reject;
+    const FLOW_CHANGE_PW                 = CONFIG.flows.changePassword;
+    const FLOW_LOGOUT                    = CONFIG.flows.logout;
+    const FLOW_TAKE_LIEU_DAYS            = CONFIG.flows.takeLieuDays;
+    const FLOW_ALL_BALANCES              = CONFIG.flows.allEmployeeBalances;
+    const FLOW_EMPLOYEE_APPROVED_HISTORY = CONFIG.flows.employeeApprovedHistory;
 
-    const SESSION_KEY = "lieu_portal_session_v5";
+    const PERSIST_SESSION_IN_SESSIONSTORAGE = true;
+    const SESSION_KEY = "lieu_portal_session_v19";
 
     const el = (id) => document.getElementById(id);
     const toast = el("toast");
@@ -714,20 +943,27 @@
     const btnLogout = el("btnLogout");
     const btnRefresh = el("btnRefresh");
     const btnChangePw = el("btnChangePw");
-
     const btnTakeLieu = el("btnTakeLieu");
+    const btnAllBalances = el("btnAllBalances");
 
     const meText = el("meText");
     const lieuDaysText = el("lieuDaysText");
     const approversText = el("approversText");
     const approverHint = el("approverHint");
 
-    const datePick = el("datePick");
+    const dateFrom = el("dateFrom");
+    const dateTo = el("dateTo");
+    const singleDate = el("singleDate");
+    const singleTimeFrom = el("singleTimeFrom");
+    const singleTimeTo = el("singleTimeTo");
+    const individualDate = el("individualDate");
+    const submitRangeBox = el("submitRangeBox");
+    const submitIndividualBox = el("submitIndividualBox");
+    const submitSingleBox = el("submitSingleBox");
     const btnClearDates = el("btnClearDates");
     const chips = el("chips");
     const daysCountText = el("daysCountText");
-
-    const reqType = el("reqType");
+    const requestTypeHint = el("requestTypeHint");
     const justification = el("justification");
     const btnSubmit = el("btnSubmit");
 
@@ -740,7 +976,6 @@
     const statusText = el("statusText");
     const statusPill = el("statusPill");
 
-    // Modals
     const pwModal = el("pwModal");
     const oldPw = el("oldPw");
     const newPw = el("newPw");
@@ -753,17 +988,38 @@
     const btnRejConfirm = el("btnRejConfirm");
 
     const detailsModal = el("detailsModal");
+    const detailsTitle = el("detailsTitle");
+    const detailsGrid = el("detailsGrid");
+    const historyGrid = el("historyGrid");
     const btnDetailsClose = el("btnDetailsClose");
-    const dStatus = el("dStatus");
+    const dStatusLabel = el("dStatusLabel");
     const dType = el("dType");
     const dDays = el("dDays");
     const dDates = el("dDates");
+    const dTimeFrom = el("dTimeFrom");
+    const dTimeTo = el("dTimeTo");
     const dJust = el("dJust");
-    const dSummary = el("dSummary");
+    const dBalance = el("dBalance");
+    const dCredaSummary = el("dCredaSummary");
+    const hName = el("hName");
+    const hBadge = el("hBadge");
+    const hLieuDays = el("hLieuDays");
+    const historyTbody = el("historyTbody");
+    const dApprovedRequestsStatus = el("dApprovedRequestsStatus");
+    const detailsPendingActions = el("detailsPendingActions");
+    const btnDetailsApprove = el("btnDetailsApprove");
+    const btnDetailsReject = el("btnDetailsReject");
 
-    // Take lieu modal
     const takeLieuModal = el("takeLieuModal");
-    const takeDatePick = el("takeDatePick");
+    const takeDateFrom = el("takeDateFrom");
+    const takeDateTo = el("takeDateTo");
+    const takeSingleDate = el("takeSingleDate");
+    const takeTimeFrom = el("takeTimeFrom");
+    const takeTimeTo = el("takeTimeTo");
+    const takeIndividualDate = el("takeIndividualDate");
+    const takeRangeBox = el("takeRangeBox");
+    const takeIndividualBox = el("takeIndividualBox");
+    const takeSingleBox = el("takeSingleBox");
     const btnTakeClear = el("btnTakeClear");
     const takeChips = el("takeChips");
     const takeDaysCountText = el("takeDaysCountText");
@@ -772,32 +1028,40 @@
     const btnTakeCancel = el("btnTakeCancel");
     const btnTakeSubmit = el("btnTakeSubmit");
     const spinTakeSubmit = el("spinTakeSubmit");
+    const takeTypeHint = el("takeTypeHint");
+
+    const balancesModal = el("balancesModal");
+    const balancesTbody = el("balancesTbody");
+    const btnBalancesClose = el("btnBalancesClose");
 
     let selectedDates = [];
-    let pendingRejectRequestId = null;
-
     let takeDates = [];
+    let pendingRejectRequestId = null;
     let cachedLieuBalance = 0;
+    let sessionMem = null;
+    let reopenBalancesAfterDetailsClose = false;
+    let detailsRequestContext = null;
+    let selectedTimeFrom = "";
+    let selectedTimeTo = "";
+    let takeSelectedTimeFrom = "";
+    let takeSelectedTimeTo = "";
 
-    // ---------- Helpers ----------
     function lowerKeys(obj){
       const out = {};
       if (!obj || typeof obj !== "object") return out;
-      for (const k of Object.keys(obj)){
-        out[String(k).toLowerCase()] = obj[k];
-      }
+      for (const k of Object.keys(obj)) out[String(k).toLowerCase()] = obj[k];
       return out;
     }
 
     function pickField(obj, candidates){
       if (!obj) return undefined;
       for (const c of candidates){
-        if (obj[c] !== undefined && obj[c] !== null) return obj[c];
+        if (Object.prototype.hasOwnProperty.call(obj, c) && obj[c] !== undefined && obj[c] !== null) return obj[c];
       }
       const lk = lowerKeys(obj);
       for (const c of candidates){
         const key = String(c).toLowerCase();
-        if (lk[key] !== undefined && lk[key] !== null) return lk[key];
+        if (Object.prototype.hasOwnProperty.call(lk, key) && lk[key] !== undefined && lk[key] !== null) return lk[key];
       }
       const keys = Object.keys(obj);
       for (const c of candidates){
@@ -808,10 +1072,25 @@
       return undefined;
     }
 
+    function getBadgeValue(obj){
+      return pickField(obj, [
+        "badge","Badge","badgeNumber","BadgeNumber","employeeBadge","EmployeeBadge",
+        "badgeno","BadgeNo","badge_no","Badge_No","title","Title"
+      ]) || "—";
+    }
+
+    function getEmployeeEmailValue(obj){
+      return pickField(obj, ["employeeEmail","EmployeeEmail","email","Email","title","Title"]) || "";
+    }
+
     function asString(v){
       if (v === undefined || v === null) return "";
       if (typeof v === "string") return v;
       return String(v);
+    }
+
+    function normEmail(v){
+      return String(v || "").trim().toLowerCase();
     }
 
     function prettyDates(datesJsonOrArray){
@@ -828,11 +1107,117 @@
       }
     }
 
-    function shorten(text, n){
-      const s = asString(text).trim();
-      if (!s) return "—";
-      if (s.length <= n) return s;
-      return s.slice(0, n) + "…";
+    function formatDateTime(v){
+      if (!v) return "—";
+      const d = new Date(v);
+      if (Number.isNaN(d.getTime())) return asString(v);
+      return d.toLocaleString();
+    }
+
+    function formatBalanceText(value){
+      const num = Number(value);
+      if (!Number.isFinite(num)) return asString(value) || "—";
+
+      let days = Math.trunc(num);
+      let hours = (num - days) / 0.125;
+
+      if (hours >= 8){
+        days += Math.floor(hours / 8);
+        hours = hours % 8;
+      }
+
+      hours = Math.round(hours * 10) / 10;
+
+      if (hours >= 8){
+        days += Math.floor(hours / 8);
+        hours = Math.round((hours % 8) * 10) / 10;
+      }
+
+      const hoursText = hours.toFixed(1);
+      return `${days} ${days === 1 ? "Day" : "Days"} and ${hoursText} ${hours === 1 ? "Hour" : "Hours"}`;
+    }
+
+    function isNegativeRequestType(type){
+      const t = String(type || "").toLowerCase();
+      return t === "take lieu days" || t === "take lieu hours";
+    }
+
+    function isPositiveRequestType(type){
+      const t = String(type || "").toLowerCase();
+      return t === "lieu days" || t === "lieu hours" || t === "holiday";
+    }
+
+    function createSignedDaysElement(days, type){
+      const wrap = document.createElement("span");
+      let cls = "signedDays";
+      let mark = "";
+      const t = String(type || "").toLowerCase();
+      let unit = "";
+
+      if (isNegativeRequestType(type)){
+        cls += " minus";
+        mark = "−";
+      } else if (isPositiveRequestType(type)){
+        cls += " plus";
+        mark = "+";
+      }
+
+      if (t === "lieu days" || t === "take lieu days" || t === "holiday") unit = "Days";
+      else if (t === "lieu hours" || t === "take lieu hours") unit = "Hours";
+
+      wrap.className = cls;
+
+      if (mark){
+        const sign = document.createElement("span");
+        sign.className = "signedMark";
+        sign.textContent = mark;
+        wrap.appendChild(sign);
+      }
+
+      const value = document.createElement("span");
+      value.textContent = asString(days);
+      wrap.appendChild(value);
+
+      if (unit){
+        const unitEl = document.createElement("span");
+        unitEl.textContent = unit;
+        wrap.appendChild(unitEl);
+      }
+
+      return wrap;
+    }
+
+    function extractEmployeeBalance(obj, fallback){
+      const balance = pickField(obj, [
+        "employeeCurrentBalance","EmployeeCurrentBalance",
+        "currentEmployeeBalance","CurrentEmployeeBalance",
+        "employeeBalance","EmployeeBalance",
+        "employeeLieuDays","EmployeeLieuDays",
+        "requestEmployeeBalance","RequestEmployeeBalance",
+        "requesterBalance","RequesterBalance",
+        "currentBalance","CurrentBalance",
+        "lieuBalance","LieuBalance",
+        "lieuDays","LieuDays",
+        "balance","Balance"
+      ]);
+      return balance ?? fallback;
+    }
+
+    function normalizeApprovedRequestArray(source){
+      if (!source) return [];
+      if (Array.isArray(source)) return source;
+      if (typeof source === "string"){
+        const raw = source.trim();
+        if (!raw) return [];
+        try{
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        }catch{
+          return [];
+        }
+      }
+      if (typeof source === "object") return [source];
+      return [];
     }
 
     function showToast(message){
@@ -870,11 +1255,31 @@
       btnChangePw.disabled = on;
       btnTakeLieu.disabled = on;
       btnTakeSubmit.disabled = on;
+      btnAllBalances.disabled = on;
     }
 
-    function saveSession(s){ sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
-    function loadSession(){ try{ return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null"); }catch{ return null; } }
-    function clearSession(){ sessionStorage.removeItem(SESSION_KEY); }
+    function saveSession(s){
+      sessionMem = s;
+      if (!PERSIST_SESSION_IN_SESSIONSTORAGE) return;
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
+    }
+
+    function loadSession(){
+      if (sessionMem?.token) return sessionMem;
+      if (!PERSIST_SESSION_IN_SESSIONSTORAGE) return null;
+      try{
+        const v = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+        sessionMem = v;
+        return v;
+      }catch{
+        return null;
+      }
+    }
+
+    function clearSession(){
+      sessionMem = null;
+      try{ sessionStorage.removeItem(SESSION_KEY); }catch{}
+    }
 
     async function postJSON(url, payload){
       const res = await fetch(url, {
@@ -884,8 +1289,49 @@
       });
       const text = await res.text();
       let data;
-      try{ data = JSON.parse(text); } catch { data = { success:false, raw:text, httpStatus: res.status }; }
+      try{ data = JSON.parse(text); }
+      catch{ data = { success:false, raw:text, httpStatus: res.status }; }
       return { status: res.status, data };
+    }
+
+    function clearLoginFields(){
+      usernameInput.value = "";
+      passwordInput.value = "";
+      otpInput.value = "";
+    }
+
+    function clearAppFields(){
+      selectedDates = [];
+      takeDates = [];
+      selectedTimeFrom = "";
+      selectedTimeTo = "";
+      takeSelectedTimeFrom = "";
+      takeSelectedTimeTo = "";
+      renderDates();
+      renderTakeDates();
+      justification.value = "";
+      takeJustification.value = "";
+      meText.textContent = "";
+      lieuDaysText.textContent = "—";
+      approversText.textContent = "";
+      approverHint.textContent = "";
+      reqCountText.textContent = "";
+      pendingCountText.textContent = "";
+      setTbodyEmpty(reqTbody, 5, "No data yet.");
+      setTbodyEmpty(pendingTbody, 6, "No pending approvals.");
+      setTbodyEmpty(balancesTbody, 4, "No balances found.");
+      dateFrom.value = "";
+      dateTo.value = "";
+      singleDate.value = "";
+      singleTimeFrom.value = "";
+      singleTimeTo.value = "";
+      individualDate.value = "";
+      takeDateFrom.value = "";
+      takeDateTo.value = "";
+      takeSingleDate.value = "";
+      takeTimeFrom.value = "";
+      takeTimeTo.value = "";
+      takeIndividualDate.value = "";
     }
 
     function showLogin(){
@@ -902,109 +1348,484 @@
       setStatus("", "");
     }
 
-    // ===== Dates UI (Overtime) =====
+    function clearChildren(node){
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function setTbodyEmpty(tbody, colSpan, message){
+      clearChildren(tbody);
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = colSpan;
+      td.className = "muted";
+      td.textContent = message;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
+
+    function tdText(text, className){
+      const td = document.createElement("td");
+      if (className) td.className = className;
+      td.textContent = asString(text);
+      return td;
+    }
+
+    function makeStatusPillElement(statusTextRaw){
+      const t = String(statusTextRaw || "");
+      const tl = t.toLowerCase();
+      const span = document.createElement("span");
+      span.className = "pill pending";
+      if (tl.includes("approved")) { span.className = "pill approved"; span.textContent = "Approved"; return span; }
+      if (tl.includes("rejected")) { span.className = "pill rejected"; span.textContent = "Rejected"; return span; }
+      if (tl.includes("assistant director")) { span.className = "pill info"; span.textContent = t; return span; }
+      if (!tl) { span.className = "pill pending"; span.textContent = "Pending"; return span; }
+      span.textContent = t;
+      return span;
+    }
+
+    function getSelectedRequestType(){
+      const checked = document.querySelector('input[name="requestType"]:checked');
+      return checked ? checked.value : "Lieu Days";
+    }
+
+    function getSelectedTakeType(){
+      const checked = document.querySelector('input[name="takeType"]:checked');
+      return checked ? checked.value : "Take Lieu Days";
+    }
+
+    function isSingleDateRequestType(type){
+      return type === "Lieu Hours";
+    }
+
+    function isSingleDateTakeType(type){
+      return type === "Take Lieu Hours";
+    }
+
+    function enumerateDates(startStr, endStr){
+      if (!startStr || !endStr) return [];
+
+      const startParts = startStr.split("-").map(Number);
+      const endParts = endStr.split("-").map(Number);
+      if (startParts.length !== 3 || endParts.length !== 3) return [];
+
+      const start = new Date(startParts[0], startParts[1] - 1, startParts[2]);
+      const end = new Date(endParts[0], endParts[1] - 1, endParts[2]);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) return [];
+
+      const out = [];
+      const cur = new Date(start);
+
+      while (cur <= end){
+        const y = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, "0");
+        const d = String(cur.getDate()).padStart(2, "0");
+        out.push(`${y}-${m}-${d}`);
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      return out;
+    }
+
+    function addUniqueDates(targetArray, datesToAdd){
+      const set = new Set(targetArray);
+      for (const d of datesToAdd){
+        if (d) set.add(d);
+      }
+      return Array.from(set).sort();
+    }
+
     function renderDates(){
-      chips.innerHTML = "";
+      clearChildren(chips);
       selectedDates.sort();
       for (const d of selectedDates){
         const chip = document.createElement("div");
         chip.className = "chip";
-        chip.innerHTML = `<span>${d}</span>`;
+        const sp = document.createElement("span");
+        sp.textContent = d;
+        chip.appendChild(sp);
+
         const x = document.createElement("button");
         x.type = "button";
         x.textContent = "✕";
-        x.onclick = () => { selectedDates = selectedDates.filter(v => v !== d); renderDates(); };
+        x.onclick = () => {
+          selectedDates = selectedDates.filter(v => v !== d);
+          renderDates();
+        };
         chip.appendChild(x);
         chips.appendChild(chip);
       }
       daysCountText.textContent = String(selectedDates.length);
     }
 
-    datePick.addEventListener("change", () => {
-      const d = datePick.value;
-      if (!d) return;
-      if (!selectedDates.includes(d)) selectedDates.push(d);
-      renderDates();
-      datePick.value = "";
-    });
-
-    btnClearDates.addEventListener("click", () => {
-      selectedDates = [];
-      renderDates();
-    });
-
-    // ===== Take Lieu modal dates UI =====
     function renderTakeDates(){
-      takeChips.innerHTML = "";
+      clearChildren(takeChips);
       takeDates.sort();
       for (const d of takeDates){
         const chip = document.createElement("div");
         chip.className = "chip";
-        chip.innerHTML = `<span>${d}</span>`;
+        const sp = document.createElement("span");
+        sp.textContent = d;
+        chip.appendChild(sp);
+
         const x = document.createElement("button");
         x.type = "button";
         x.textContent = "✕";
-        x.onclick = () => { takeDates = takeDates.filter(v => v !== d); renderTakeDates(); };
+        x.onclick = () => {
+          takeDates = takeDates.filter(v => v !== d);
+          renderTakeDates();
+        };
         chip.appendChild(x);
         takeChips.appendChild(chip);
       }
       takeDaysCountText.textContent = String(takeDates.length);
-      if (cachedLieuBalance >= 0){
-        takeBalanceHint.textContent = `• Balance: ${cachedLieuBalance}`;
-      }else{
-        takeBalanceHint.textContent = "";
-      }
+      takeBalanceHint.textContent = Number.isFinite(cachedLieuBalance) ? `• Balance: ${formatBalanceText(cachedLieuBalance)}` : "";
     }
 
-    takeDatePick.addEventListener("change", () => {
-      const d = takeDatePick.value;
-      if (!d) return;
-      if (!takeDates.includes(d)) takeDates.push(d);
+    function syncSubmitDateMode(){
+      const type = getSelectedRequestType();
+      const single = isSingleDateRequestType(type);
+
+      submitRangeBox.classList.toggle("hidden", single);
+      submitIndividualBox.classList.toggle("hidden", single);
+      submitSingleBox.classList.toggle("hidden", !single);
+
+      requestTypeHint.textContent = single
+        ? "Lieu Hours uses one date and time range."
+        : "Lieu Days and Holiday can use individual dates or a date range.";
+
+      selectedDates = [];
+      selectedTimeFrom = "";
+      selectedTimeTo = "";
+      dateFrom.value = "";
+      dateTo.value = "";
+      individualDate.value = "";
+      singleDate.value = "";
+      singleTimeFrom.value = "";
+      singleTimeTo.value = "";
+      renderDates();
+    }
+
+    function syncTakeDateMode(){
+      const type = getSelectedTakeType();
+      const single = isSingleDateTakeType(type);
+
+      takeRangeBox.classList.toggle("hidden", single);
+      takeIndividualBox.classList.toggle("hidden", single);
+      takeSingleBox.classList.toggle("hidden", !single);
+
+      takeTypeHint.textContent = single
+        ? "Take Lieu Hours uses one date and time range."
+        : "Take Lieu Days can use individual dates or a date range.";
+
+      takeDates = [];
+      takeSelectedTimeFrom = "";
+      takeSelectedTimeTo = "";
+      takeDateFrom.value = "";
+      takeDateTo.value = "";
+      takeIndividualDate.value = "";
+      takeSingleDate.value = "";
+      takeTimeFrom.value = "";
+      takeTimeTo.value = "";
       renderTakeDates();
-      takeDatePick.value = "";
+    }
+
+    document.querySelectorAll('input[name="requestType"]').forEach(r => {
+      r.addEventListener("change", syncSubmitDateMode);
+    });
+
+    document.querySelectorAll('input[name="takeType"]').forEach(r => {
+      r.addEventListener("change", syncTakeDateMode);
+    });
+
+    function tryAutoAddSubmitRange(){
+      if (!dateFrom.value || !dateTo.value) return;
+
+      const dates = enumerateDates(dateFrom.value, dateTo.value);
+      if (!dates.length){
+        setStatus("bad", "Please select a valid range.");
+        return;
+      }
+
+      selectedDates = addUniqueDates(selectedDates, dates);
+      renderDates();
+      dateFrom.value = "";
+      dateTo.value = "";
+    }
+
+    function tryAutoAddTakeRange(){
+      if (!takeDateFrom.value || !takeDateTo.value) return;
+
+      const dates = enumerateDates(takeDateFrom.value, takeDateTo.value);
+      if (!dates.length){
+        setStatus("bad", "Please select a valid range.");
+        return;
+      }
+
+      takeDates = addUniqueDates(takeDates, dates);
+      renderTakeDates();
+      takeDateFrom.value = "";
+      takeDateTo.value = "";
+    }
+
+    function trySetLieuHoursDateTime(){
+      if (!singleDate.value || !singleTimeFrom.value || !singleTimeTo.value) return;
+      if (singleTimeFrom.value >= singleTimeTo.value){
+        setStatus("bad", "To Time must be later than From Time.");
+        return;
+      }
+      selectedDates = [singleDate.value];
+      selectedTimeFrom = singleTimeFrom.value;
+      selectedTimeTo = singleTimeTo.value;
+      renderDates();
+    }
+
+    function trySetTakeLieuHoursDateTime(){
+      if (!takeSingleDate.value || !takeTimeFrom.value || !takeTimeTo.value) return;
+      if (takeTimeFrom.value >= takeTimeTo.value){
+        setStatus("bad", "To Time must be later than From Time.");
+        return;
+      }
+      takeDates = [takeSingleDate.value];
+      takeSelectedTimeFrom = takeTimeFrom.value;
+      takeSelectedTimeTo = takeTimeTo.value;
+      renderTakeDates();
+    }
+
+    dateFrom.addEventListener("change", tryAutoAddSubmitRange);
+    dateTo.addEventListener("change", tryAutoAddSubmitRange);
+
+    individualDate.addEventListener("change", () => {
+      if (!individualDate.value) return;
+      selectedDates = addUniqueDates(selectedDates, [individualDate.value]);
+      renderDates();
+      individualDate.value = "";
+    });
+
+    singleDate.addEventListener("change", trySetLieuHoursDateTime);
+    singleTimeFrom.addEventListener("change", trySetLieuHoursDateTime);
+    singleTimeTo.addEventListener("change", trySetLieuHoursDateTime);
+
+    takeDateFrom.addEventListener("change", tryAutoAddTakeRange);
+    takeDateTo.addEventListener("change", tryAutoAddTakeRange);
+
+    takeIndividualDate.addEventListener("change", () => {
+      if (!takeIndividualDate.value) return;
+      takeDates = addUniqueDates(takeDates, [takeIndividualDate.value]);
+      renderTakeDates();
+      takeIndividualDate.value = "";
+    });
+
+    takeSingleDate.addEventListener("change", trySetTakeLieuHoursDateTime);
+    takeTimeFrom.addEventListener("change", trySetTakeLieuHoursDateTime);
+    takeTimeTo.addEventListener("change", trySetTakeLieuHoursDateTime);
+
+    btnClearDates.addEventListener("click", () => {
+      selectedDates = [];
+      selectedTimeFrom = "";
+      selectedTimeTo = "";
+      dateFrom.value = "";
+      dateTo.value = "";
+      individualDate.value = "";
+      singleDate.value = "";
+      singleTimeFrom.value = "";
+      singleTimeTo.value = "";
+      renderDates();
     });
 
     btnTakeClear.addEventListener("click", () => {
       takeDates = [];
+      takeSelectedTimeFrom = "";
+      takeSelectedTimeTo = "";
+      takeDateFrom.value = "";
+      takeDateTo.value = "";
+      takeIndividualDate.value = "";
+      takeSingleDate.value = "";
+      takeTimeFrom.value = "";
+      takeTimeTo.value = "";
       renderTakeDates();
     });
 
-    // ===== Tables =====
-    function statusPillFor(statusTextRaw){
-      const t = String(statusTextRaw || "").toLowerCase();
-      if (t.includes("approved")) return `<span class="pill approved">Approved</span>`;
-      if (t.includes("rejected")) return `<span class="pill rejected">Rejected</span>`;
-      if (!t) return `<span class="pill pending">Pending</span>`;
-      return `<span class="pill pending">${statusTextRaw}</span>`;
+    function canFrontendApprove(stageRaw){
+      const s = String(stageRaw || "").toLowerCase();
+      if (!s) return true;
+      if (s.includes("assistant")) return false;
+      return true;
     }
 
-    function openDetails(r){
-      const status = pickField(r, ["status","Status","req_status","requeststatus"]) ?? "—";
+    function openRequestDetails(r){
+      detailsTitle.textContent = "Request Details";
+      detailsGrid.classList.remove("hidden");
+      historyGrid.classList.add("hidden");
+
+      const statusLabel = pickField(r, ["statusLabel","StatusLabel"]) ?? "—";
       const type   = pickField(r, ["requestType","RequestType","type"]) ?? "—";
       const days   = pickField(r, ["daysCount","DaysCount","dayscount"]) ?? "—";
       const dates  = pickField(r, ["datesJson","DatesJson","datesjson","dates","datesJSON","DatesJSON","_computedDates"]) ?? "—";
+      const timeFrom = pickField(r, ["timeFrom","TimeFrom","fromTime","FromTime","startTime","StartTime"]) ?? "—";
+      const timeTo = pickField(r, ["timeTo","TimeTo","toTime","ToTime","endTime","EndTime"]) ?? "—";
       const just   = pickField(r, ["justification","Justification","_computedJust"]) ?? "—";
-      const summary= pickField(r, ["approvalSummary","ApprovalSummary","summary"]) ??
-                     pickField(r, ["rejectedReason","RejectedReason"]) ??
-                     "—";
 
-      dStatus.textContent = asString(status) || "—";
+      const isPendingView = !!pickField(r, ["_pendingContext"]);
+      const balance = isPendingView
+        ? extractEmployeeBalance(r, "—")
+        : extractEmployeeBalance(r, cachedLieuBalance ?? "—");
+
+      dStatusLabel.textContent = asString(statusLabel) || "—";
       dType.textContent = asString(type) || "—";
       dDays.textContent = asString(days) || "—";
       dDates.textContent = prettyDates(dates);
+      dTimeFrom.textContent = asString(timeFrom) || "—";
+      dTimeTo.textContent = asString(timeTo) || "—";
       dJust.textContent = asString(just) || "—";
-      dSummary.textContent = asString(summary) || "—";
+      dBalance.textContent = formatBalanceText(balance);
 
+      const requestId = pickField(r, ["id","requestId","RequestId"]) || "";
+      const stage = pickField(r, ["stage","Stage","currentStage","CurrentStage","pendingWith","PendingWith","status","Status"]) ?? "";
+      const canAct = isPendingView && requestId && canFrontendApprove(stage);
+
+      detailsRequestContext = { requestId, stage, canAct, pendingView: isPendingView };
+      detailsPendingActions.classList.toggle("hidden", !canAct);
       detailsModal.style.display = "flex";
     }
 
-    btnDetailsClose.addEventListener("click", () => { detailsModal.style.display = "none"; });
-    detailsModal.addEventListener("click", (e) => { if (e.target === detailsModal) detailsModal.style.display = "none"; });
+    function renderApprovedRequestsTable(items){
+      clearChildren(historyTbody);
+
+      if (!items.length){
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 6;
+        td.className = "historyEmpty";
+        td.textContent = "No approved requests found.";
+        tr.appendChild(td);
+        historyTbody.appendChild(tr);
+        return;
+      }
+
+      for (const item of items){
+        const tr = document.createElement("tr");
+
+        const created = tdText(formatDateTime(pickField(item, ["created","Created","createdon","CreatedOn","approvedAt","ApprovedAt"])));
+        const type = tdText(pickField(item, ["requestType","RequestType","type","Type"]) || "—");
+        const days = tdText(pickField(item, ["daysCount","DaysCount","days","Days"]) ?? "—");
+        const status = tdText(pickField(item, ["statusLabel","StatusLabel","status","Status"]) || "Approved");
+
+        const dates = document.createElement("td");
+        dates.className = "wrap";
+        dates.textContent = prettyDates(pickField(item, ["datesJson","DatesJson","dates","Dates"]) || "—").replace(/\n/g, ", ");
+
+        const timeFrom = pickField(item, ["timeFrom","TimeFrom","fromTime","FromTime"]);
+        const timeTo = pickField(item, ["timeTo","TimeTo","toTime","ToTime"]);
+        const time = tdText(
+          ((timeFrom !== null && timeFrom !== undefined && String(timeFrom).trim() !== "") ||
+           (timeTo !== null && timeTo !== undefined && String(timeTo).trim() !== ""))
+            ? `${asString(timeFrom) || "—"} → ${asString(timeTo) || "—"}`
+            : "—"
+        );
+
+        tr.appendChild(created);
+        tr.appendChild(type);
+        tr.appendChild(days);
+        tr.appendChild(status);
+        tr.appendChild(dates);
+        tr.appendChild(time);
+
+        historyTbody.appendChild(tr);
+      }
+    }
+
+    async function loadApprovedRequestsForEmployee(employeeRow){
+      const s = loadSession();
+      if (!s?.token) return { success:false, approvedRequests:[] };
+
+      const payload = {
+        token: s.token,
+        employeeEmail: getEmployeeEmailValue(employeeRow),
+        badge: getBadgeValue(employeeRow)
+      };
+
+      const { data } = await postJSON(FLOW_EMPLOYEE_APPROVED_HISTORY, payload);
+      if (!data.success) return { success:false, approvedRequests:[] };
+
+      return {
+        success: true,
+        approvedRequests: normalizeApprovedRequestArray(data.approvedRequests)
+      };
+    }
+
+    async function openHistoryDetails(employeeRow){
+      detailsTitle.textContent = "Employee Balance History";
+      detailsGrid.classList.add("hidden");
+      historyGrid.classList.remove("hidden");
+      detailsPendingActions.classList.add("hidden");
+      detailsRequestContext = null;
+
+      hName.textContent = asString(pickField(employeeRow, ["displayName","DisplayName","name","Name"]) || "—");
+      hBadge.textContent = asString(getBadgeValue(employeeRow));
+      hLieuDays.textContent = formatBalanceText(pickField(employeeRow, ["lieuDays","LieuDays","balance","Balance"]) ?? "—");
+
+      const summary = pickField(employeeRow, [
+        "creda_summary","CredaSummary","credaSummary","summary","Summary","history","History"
+      ]) ?? "—";
+
+      dCredaSummary.textContent = asString(summary) || "—";
+      dApprovedRequestsStatus.textContent = "Loading approved requests...";
+      renderApprovedRequestsTable([]);
+
+      if (balancesModal.style.display === "flex"){
+        balancesModal.style.display = "none";
+        reopenBalancesAfterDetailsClose = true;
+      } else {
+        reopenBalancesAfterDetailsClose = false;
+      }
+
+      detailsModal.style.display = "flex";
+      setStatus("warn", "Loading approved requests...");
+
+      const history = await loadApprovedRequestsForEmployee(employeeRow);
+
+      if (!history.success){
+        dApprovedRequestsStatus.textContent = "Could not load approved requests.";
+        renderApprovedRequestsTable([]);
+        setStatus("bad", "Could not load approved requests.");
+        return;
+      }
+
+      dApprovedRequestsStatus.textContent = `${history.approvedRequests.length} approved request(s)`;
+      renderApprovedRequestsTable(history.approvedRequests);
+      setStatus("good", "Approved requests loaded.");
+    }
+
+    function closeDetailsModal(){
+      detailsModal.style.display = "none";
+      detailsPendingActions.classList.add("hidden");
+      detailsRequestContext = null;
+      if (reopenBalancesAfterDetailsClose){
+        balancesModal.style.display = "flex";
+        reopenBalancesAfterDetailsClose = false;
+      }
+    }
+
+    btnDetailsApprove.addEventListener("click", async () => {
+      if (!detailsRequestContext?.canAct || !detailsRequestContext.requestId) return;
+      await approveRequest(detailsRequestContext.requestId);
+      closeDetailsModal();
+    });
+
+    btnDetailsReject.addEventListener("click", () => {
+      if (!detailsRequestContext?.canAct || !detailsRequestContext.requestId) return;
+      closeDetailsModal();
+      openReject(detailsRequestContext.requestId);
+    });
+
+    btnDetailsClose.addEventListener("click", closeDetailsModal);
+    detailsModal.addEventListener("click", (e) => { if (e.target === detailsModal) closeDetailsModal(); });
 
     function renderRequests(reqs){
       reqCountText.textContent = `${reqs.length} request(s)`;
       if (!reqs.length){
-        reqTbody.innerHTML = `<tr><td colspan="6" class="muted">No requests yet.</td></tr>`;
+        setTbodyEmpty(reqTbody, 5, "No requests yet.");
         return;
       }
 
@@ -1014,92 +1835,189 @@
         return String(bc).localeCompare(String(ac));
       });
 
-      reqTbody.innerHTML = "";
+      clearChildren(reqTbody);
+
       for (const r of reqs){
         const createdRaw = pickField(r, ["created","createdon","CreatedOn","Created","created_at"]);
-        const created = createdRaw ? new Date(createdRaw).toLocaleString() : "—";
+        const created = createdRaw ? formatDateTime(createdRaw) : "—";
 
         const days = pickField(r, ["daysCount","DaysCount","dayscount"]) ?? "—";
         const type = pickField(r, ["requestType","RequestType","type"]) ?? "—";
-
-        const statusRaw =
-          pickField(r, ["statusLabel", "StatusLabel", "creda_status_label"]) ??
-          pickField(r, ["status","Status","req_status","requeststatus","creda_status"]);
-
-        const status = statusPillFor(statusRaw);
+        const statusLabel =
+          pickField(r, ["statusLabel", "StatusLabel"]) ??
+          pickField(r, ["status","Status","req_status","requeststatus"]);
 
         const just = pickField(r, ["justification","Justification"]);
-        const justShort = shorten(just, 110);
+        const balance = extractEmployeeBalance(r, cachedLieuBalance ?? "—");
+        const enriched = { ...r, _computedJust: just, employeeCurrentBalance: balance };
 
-        const enriched = { ...r, _computedJust: just };
+        const tr = document.createElement("tr");
+        tr.appendChild(tdText(created, "wrap"));
+        const tdDays = document.createElement("td");
+        tdDays.appendChild(createSignedDaysElement(days, type));
+        tr.appendChild(tdDays);
+        tr.appendChild(tdText(type));
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="wrap">${created}</td>
-          <td>${days}</td>
-          <td>${type}</td>
-          <td>${status}</td>
-          <td class="muted wrap">${justShort}</td>
-          <td><button class="btn-ghost" type="button">Show</button></td>
-        `;
-        row.querySelector("button").addEventListener("click", () => openDetails(enriched));
-        reqTbody.appendChild(row);
+        const tdStatus = document.createElement("td");
+        tdStatus.appendChild(makeStatusPillElement(statusLabel));
+        tr.appendChild(tdStatus);
+
+        const tdBtn = document.createElement("td");
+        const btn = document.createElement("button");
+        btn.className = "btn-ghost";
+        btn.type = "button";
+        btn.textContent = "Show";
+        btn.addEventListener("click", () => openRequestDetails(enriched));
+        tdBtn.appendChild(btn);
+        tr.appendChild(tdBtn);
+
+        reqTbody.appendChild(tr);
       }
     }
 
     function renderPending(pending){
       pendingCountText.textContent = `${pending.length} pending`;
       if (!pending.length){
-        pendingTbody.innerHTML = `<tr><td colspan="6" class="muted">No pending approvals.</td></tr>`;
+        setTbodyEmpty(pendingTbody, 6, "No pending approvals.");
         return;
       }
 
-      pendingTbody.innerHTML = "";
+      clearChildren(pendingTbody);
+
       for (const p of pending){
-        const emp = pickField(p, ["employeeEmail","EmployeeEmail"]) || "—";
-        const days = pickField(p, ["daysCount","DaysCount"]) ?? "—";
+        const createdRaw = pickField(p, ["created","createdon","CreatedOn","Created","created_at"]);
+        const created = createdRaw ? formatDateTime(createdRaw) : "—";
+        const displayName = pickField(p, ["displayName","DisplayName","employeeDisplayName","EmployeeDisplayName","name","Name","employeeName","EmployeeName"]) || "—";
+        const badge = getBadgeValue(p);
+        const days = pickField(p, ["daysCount","DaysCount","dayscount"]) ?? "—";
         const type = pickField(p, ["requestType","RequestType"]) ?? "—";
         const dates = pickField(p, ["datesJson","DatesJson","dates"]) ?? "—";
         const just = pickField(p, ["justification","Justification"]) ?? "—";
-
-        const datesShort = shorten(prettyDates(dates).replace(/\n/g,", "), 80);
-        const justShort = shorten(just, 90);
-
+        const stage = pickField(p, ["stage","Stage","currentStage","CurrentStage","pendingWith","PendingWith","status","Status"]) ?? "—";
+        const statusLabel = pickField(p, ["statusLabel","StatusLabel"]) ?? stage ?? "—";
+        const balance = extractEmployeeBalance(p, "—");
         const id = pickField(p, ["id","requestId","RequestId"]) || "";
 
-        const enriched = { ...p, _computedDates: dates, _computedJust: just };
+        const enriched = {
+          ...p,
+          _computedDates: dates,
+          _computedJust: just,
+          statusLabel,
+          employeeCurrentBalance: balance,
+          _pendingContext: true
+        };
 
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="wrap">${emp}</td>
-          <td>${days}</td>
-          <td>${type}</td>
-          <td class="muted wrap">${datesShort}</td>
-          <td class="muted wrap">${justShort}</td>
-          <td>
-            <div class="actionStack">
-              <button class="btn-ghost" data-show="${id}" type="button">Show</button>
-              <button class="btn-primary" data-approve="${id}" type="button">Approve</button>
-              <button class="btn-danger" data-reject="${id}" type="button">Reject</button>
-            </div>
-          </td>
-        `;
+        const tr = document.createElement("tr");
+        tr.appendChild(tdText(created, "wrap"));
+        tr.appendChild(tdText(displayName, "wrap"));
+        tr.appendChild(tdText(badge));
+        const tdDays = document.createElement("td");
+        tdDays.appendChild(createSignedDaysElement(days, type));
+        tr.appendChild(tdDays);
+        tr.appendChild(tdText(type));
 
-        row.querySelector("button[data-show]").addEventListener("click", () => openDetails(enriched));
-        row.querySelector("button[data-approve]").addEventListener("click", async () => {
-          const rid = row.querySelector("button[data-approve]").getAttribute("data-approve");
-          await approveRequest(rid);
-        });
-        row.querySelector("button[data-reject]").addEventListener("click", () => {
-          const rid = row.querySelector("button[data-reject]").getAttribute("data-reject");
-          openReject(rid);
-        });
+        const tdActions = document.createElement("td");
+        const stack = document.createElement("div");
+        stack.className = "actionStack";
 
-        pendingTbody.appendChild(row);
+        const bShow = document.createElement("button");
+        bShow.className = "btn-ghost";
+        bShow.type = "button";
+        bShow.textContent = "Show";
+        bShow.addEventListener("click", () => openRequestDetails(enriched));
+        stack.appendChild(bShow);
+
+        if (canFrontendApprove(stage)) {
+          const bApprove = document.createElement("button");
+          bApprove.className = "btn-primary";
+          bApprove.type = "button";
+          bApprove.textContent = "Approve";
+          bApprove.addEventListener("click", async () => approveRequest(id));
+          stack.appendChild(bApprove);
+
+          const bReject = document.createElement("button");
+          bReject.className = "btn-danger";
+          bReject.type = "button";
+          bReject.textContent = "Reject";
+          bReject.addEventListener("click", () => openReject(id));
+          stack.appendChild(bReject);
+        } else {
+          const info = document.createElement("span");
+          info.className = "pill info";
+          info.textContent = "Approval handled in Power Automate";
+          stack.appendChild(info);
+        }
+
+        tdActions.appendChild(stack);
+        tr.appendChild(tdActions);
+        pendingTbody.appendChild(tr);
       }
     }
 
-    // ===== Login / OTP =====
+    function renderBalances(rows){
+      if (!rows.length){
+        setTbodyEmpty(balancesTbody, 4, "No balances found.");
+        return;
+      }
+
+      clearChildren(balancesTbody);
+
+      rows.sort((a,b) => {
+        const an = asString(pickField(a, ["displayName","DisplayName","title","Title"])).toLowerCase();
+        const bn = asString(pickField(b, ["displayName","DisplayName","title","Title"])).toLowerCase();
+        return an.localeCompare(bn);
+      });
+
+      for (const r of rows){
+        const displayName = pickField(r, ["displayName","DisplayName","name","Name"]) || "—";
+        const badge = getBadgeValue(r);
+        const lieuDays = pickField(r, ["lieuDays","LieuDays","balance","Balance"]) ?? "—";
+
+        const tr = document.createElement("tr");
+        tr.appendChild(tdText(displayName, "wrap"));
+        tr.appendChild(tdText(badge));
+        tr.appendChild(tdText(formatBalanceText(lieuDays)));
+
+        const tdHistory = document.createElement("td");
+        const btn = document.createElement("button");
+        btn.className = "btn-ghost";
+        btn.type = "button";
+        btn.textContent = "History";
+        btn.addEventListener("click", async () => { await openHistoryDetails(r); });
+        tdHistory.appendChild(btn);
+        tr.appendChild(tdHistory);
+
+        balancesTbody.appendChild(tr);
+      }
+    }
+
+    function mergePendingWithEmployees(pendingApprovals, employees){
+      const employeeMap = new Map(
+        (employees || []).map(emp => [normEmail(getEmployeeEmailValue(emp)), emp])
+      );
+
+      return (pendingApprovals || []).map(req => {
+        const reqEmail = normEmail(getEmployeeEmailValue(req));
+        const emp = employeeMap.get(reqEmail) || {};
+
+        return {
+          ...req,
+          displayName:
+            pickField(req, ["displayName","DisplayName","employeeDisplayName","EmployeeDisplayName"]) ??
+            pickField(emp, ["displayName","DisplayName","name","Name"]) ??
+            "—",
+          badge:
+            getBadgeValue(req) !== "—"
+              ? getBadgeValue(req)
+              : getBadgeValue(emp),
+          employeeCurrentBalance:
+            extractEmployeeBalance(req, undefined) ??
+            pickField(emp, ["lieuDays","LieuDays","balance","Balance"]) ??
+            "—"
+        };
+      });
+    }
+
     btnSend.addEventListener("click", async () => {
       const username = usernameInput.value.trim();
       const password = passwordInput.value;
@@ -1157,49 +2075,68 @@
       await loadEverything();
     });
 
-    // ===== App data =====
-    async function loadDashboard(){
+    async function loadDashboardAndApprovals(){
       const s = loadSession();
-      if (!s?.token){ showLogin(); return null; }
-
-      const { data } = await postJSON(FLOW_DASHBOARD, { token: s.token });
-
-      if (!data.success){
-        clearSession();
-        setStatus("bad", data.message || "Session expired. Please login again.");
+      if (!s?.token){
         showLogin();
         return null;
       }
-      return data;
-    }
 
-    async function loadApprovals(){
-      const s = loadSession();
-      if (!s?.token) return [];
-      const { data } = await postJSON(FLOW_APPROVALS_LIST, { token: s.token });
-      if (!data.success) return [];
-      return data.pendingApprovals || [];
+      const [dashboardRes, approvalsRes] = await Promise.all([
+        postJSON(FLOW_DASHBOARD, { token: s.token }),
+        postJSON(FLOW_APPROVALS_LIST, { token: s.token })
+      ]);
+
+      const dash = dashboardRes.data;
+      const approvals = approvalsRes.data;
+
+      if (!dash.success){
+        clearSession();
+        setStatus("bad", dash.message || "Session expired. Please login again.");
+        showLogin();
+        return null;
+      }
+
+      const mergedPending = approvals.success
+        ? mergePendingWithEmployees(
+            approvals.pendingApprovals || [],
+            approvals.employees || []
+          )
+        : [];
+
+      return {
+        dash,
+        pendingApprovals: mergedPending
+      };
     }
 
     async function loadEverything(){
       setStatus("warn", "Loading…");
-      const dash = await loadDashboard();
-      if (!dash) return;
+
+      const bundle = await loadDashboardAndApprovals();
+      if (!bundle) return;
+
+      const { dash, pendingApprovals } = bundle;
 
       showApp();
       meText.textContent = `${dash.displayName || dash.username || dash.email || ""}`;
       cachedLieuBalance = Number(dash.lieuDays ?? 0);
-      lieuDaysText.textContent = String(cachedLieuBalance);
+      lieuDaysText.textContent = formatBalanceText(cachedLieuBalance);
+      
 
       approversText.textContent =
         `Approvers: Supervisor (${dash.supervisorEmail || "—"}) • Assistant Director (${dash.assistantDirectorEmail || "—"})`;
-      approverHint.textContent = "If you are an approver, pending requests will appear below.";
+      approverHint.textContent = " ";
 
-      renderRequests(dash.requests || []);
+      const requests = (dash.requests || []).map(r => ({
+        ...r,
+        employeeCurrentBalance: extractEmployeeBalance(r, cachedLieuBalance)
+      }));
+      renderRequests(requests);
 
-      const pending = await loadApprovals();
-      renderPending(pending);
+      renderPending(pendingApprovals);
 
+      renderTakeDates();
       setStatus("good", "Ready.");
     }
 
@@ -1209,13 +2146,27 @@
       const s = loadSession();
       if (!s?.token){ showLogin(); return; }
 
+      const requestType = getSelectedRequestType();
+
       if (!selectedDates.length){
-        setStatus("bad", "Please add at least one covered day.");
+        setStatus("bad", isSingleDateRequestType(requestType) ? "Please select one date." : "Please add at least one date.");
         return;
       }
+
+      if (isSingleDateRequestType(requestType)) {
+        if (!selectedTimeFrom || !selectedTimeTo) {
+          setStatus("bad", "Please select From Time and To Time.");
+          return;
+        }
+        if (selectedTimeFrom >= selectedTimeTo) {
+          setStatus("bad", "To Time must be later than From Time.");
+          return;
+        }
+      }
+
       const just = justification.value.trim();
-      if (just.length < 10){
-        setStatus("bad", "Please write a brief justification (at least 10 characters).");
+      if (just.length < 3){
+        setStatus("bad", "Please write a brief justification.");
         return;
       }
 
@@ -1225,8 +2176,10 @@
       const payload = {
         token: s.token,
         dates: selectedDates,
-        requestType: reqType.value,
-        justification: just
+        requestType,
+        justification: just,
+        timeFrom: isSingleDateRequestType(requestType) ? selectedTimeFrom : "",
+        timeTo: isSingleDateRequestType(requestType) ? selectedTimeTo : ""
       };
 
       const { data } = await postJSON(FLOW_SUBMIT_REQUEST, payload);
@@ -1241,30 +2194,47 @@
 
       setStatus("good", "Request submitted for approval.");
       showToast("Submitted");
+
       selectedDates = [];
+      selectedTimeFrom = "";
+      selectedTimeTo = "";
+      dateFrom.value = "";
+      dateTo.value = "";
+      individualDate.value = "";
+      singleDate.value = "";
+      singleTimeFrom.value = "";
+      singleTimeTo.value = "";
       renderDates();
       justification.value = "";
+
       await loadEverything();
     });
 
     btnLogout.addEventListener("click", async () => {
-  const s = loadSession();
-  if (s?.token) {
-    await postJSON(FLOW_LOGOUT, { token: s.token });
-  }
-  clearSession();
-  showToast("Logged out");
-  showLogin();
-});
+      const s = loadSession();
+      if (s?.token) await postJSON(FLOW_LOGOUT, { token: s.token });
 
+      clearSession();
+      clearAppFields();
+      clearLoginFields();
+      showToast("Logged out");
+      showLogin();
+    });
 
-    // ===== Take Lieu Days UI =====
     btnTakeLieu.addEventListener("click", () => {
       takeDates = [];
+      takeSelectedTimeFrom = "";
+      takeSelectedTimeTo = "";
       takeJustification.value = "";
+      takeDateFrom.value = "";
+      takeDateTo.value = "";
+      takeIndividualDate.value = "";
+      takeSingleDate.value = "";
+      takeTimeFrom.value = "";
+      takeTimeTo.value = "";
+      syncTakeDateMode();
       renderTakeDates();
       takeLieuModal.style.display = "flex";
-      takeDatePick.focus();
     });
 
     btnTakeCancel.addEventListener("click", () => {
@@ -1279,24 +2249,34 @@
       const s = loadSession();
       if (!s?.token){ showLogin(); return; }
 
+      const takeType = getSelectedTakeType();
+
       if (!takeDates.length){
-        setStatus("bad", "Please select at least one date.");
+        setStatus("bad", isSingleDateTakeType(takeType) ? "Please select one date." : "Please add at least one date.");
         return;
       }
 
-      // Client-side sanity: don't allow requesting more than current balance
-      if (Number.isFinite(cachedLieuBalance) && takeDates.length > cachedLieuBalance){
-        setStatus("bad", `You selected ${takeDates.length} day(s) but your balance is ${cachedLieuBalance}.`);
-        return;
+      if (isSingleDateTakeType(takeType)) {
+        if (!takeSelectedTimeFrom || !takeSelectedTimeTo) {
+          setStatus("bad", "Please select From Time and To Time.");
+          return;
+        }
+        if (takeSelectedTimeFrom >= takeSelectedTimeTo) {
+          setStatus("bad", "To Time must be later than From Time.");
+          return;
+        }
       }
 
       setLoading("take", true);
-      setStatus("warn", "Submitting Take Lieu Days request…");
+      setStatus("warn", "Submitting Take Lieu request…");
 
       const payload = {
         token: s.token,
         dates: takeDates,
-        justification: takeJustification.value.trim() || ""
+        requestType: takeType,
+        justification: takeJustification.value.trim() || "",
+        timeFrom: isSingleDateTakeType(takeType) ? takeSelectedTimeFrom : "",
+        timeTo: isSingleDateTakeType(takeType) ? takeSelectedTimeTo : ""
       };
 
       const { data } = await postJSON(FLOW_TAKE_LIEU_DAYS, payload);
@@ -1305,17 +2285,16 @@
 
       if (!data.success){
         setStatus("bad", data.message || "Submit failed.");
-        showToast("Take Lieu Days failed");
+        showToast("Take Lieu failed");
         return;
       }
 
       takeLieuModal.style.display = "none";
-      setStatus("good", "Take Lieu Days request submitted.");
+      setStatus("good", "Take Lieu request submitted.");
       showToast("Submitted");
       await loadEverything();
     });
 
-    // ===== Approve / Reject =====
     async function approveRequest(requestId){
       const s = loadSession();
       if (!s?.token) return;
@@ -1373,7 +2352,6 @@
       await loadEverything();
     });
 
-    // ===== Change password =====
     btnChangePw.addEventListener("click", () => {
       oldPw.value = "";
       newPw.value = "";
@@ -1410,8 +2388,35 @@
       showToast("Password updated");
     });
 
-    // init
+    btnAllBalances.addEventListener("click", async () => {
+      const s = loadSession();
+      if (!s?.token){ showLogin(); return; }
+
+      setStatus("warn", "Loading employee balances…");
+      const { data } = await postJSON(FLOW_ALL_BALANCES, { token: s.token });
+
+      if (!data.success){
+        setStatus("bad", data.message || "Could not load balances.");
+        return;
+      }
+
+      renderBalances(data.employees || []);
+      balancesModal.style.display = "flex";
+      setStatus("good", "Employee balances loaded.");
+    });
+
+    btnBalancesClose.addEventListener("click", () => {
+      balancesModal.style.display = "none";
+    });
+
+    balancesModal.addEventListener("click", (e) => {
+      if (e.target === balancesModal) balancesModal.style.display = "none";
+    });
+
+    syncSubmitDateMode();
+    syncTakeDateMode();
     renderDates();
+    renderTakeDates();
     loadEverything();
   </script>
 </body>
